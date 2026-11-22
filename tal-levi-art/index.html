@@ -2,13 +2,14 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>טל לוי · רגשות וצבעים</title>
-<meta name="description" content="טל לוי, אמן רב־תחומי מתל אביב. ציורי אבסטרקט, סוריאליזם ואקספרסיוניזם למכירה.">
+<meta name="description" content="טל לוי, אמן רב־תחומי מתל אביב. ציורי אבסטרקט, סוריאליזם ואקספרסיוניזם למכירה, עם חדר תצוגה בתלת־ממד.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;500;700&family=Assistant:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
+  /* Layout: a quiet gallery wall (cream / charcoal) with one dark 3D room in the middle. */
   :root {
     --bg: #f4f0e8;
     --surface: #fbf9f4;
@@ -17,174 +18,271 @@
     --line: #d9d2c4;
     --accent: #c2410c;
     --accent-ink: #fff;
+    --room: #14110e;
+    --room-ink: #f3ede2;
     --shadow: 0 1px 2px rgba(28,26,23,.06), 0 12px 32px -12px rgba(28,26,23,.25);
+    --display: "Frank Ruhl Libre", Georgia, "Times New Roman", serif;
+    --body: "Assistant", "Segoe UI", system-ui, sans-serif;
+    --gutter-l: max(24px, env(safe-area-inset-left, 0px));
+    --gutter-r: max(24px, env(safe-area-inset-right, 0px));
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #151412; --surface: #1d1b18; --ink: #ede8de; --muted: #a29b8f;
-      --line: #34302a; --accent: #f97316; --accent-ink: #151412;
+      --line: #34302a; --accent: #f97316; --accent-ink: #151412; --room: #0b0a08;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.7);
+      color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
     --bg: #151412; --surface: #1d1b18; --ink: #ede8de; --muted: #a29b8f;
-    --line: #34302a; --accent: #f97316; --accent-ink: #151412;
+    --line: #34302a; --accent: #f97316; --accent-ink: #151412; --room: #0b0a08;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.7);
+    color-scheme: dark;
   }
 
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
-    font: 400 18px/1.65 "Assistant", system-ui, sans-serif;
+    font: 400 18px/1.65 var(--body);
     -webkit-font-smoothing: antialiased;
   }
   img { max-width: 100%; display: block; }
   a { color: inherit; }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-  @media (max-width: 600px) { .wrap { padding: 0 16px; } }
-  .serif { font-family: "Frank Ruhl Libre", Georgia, serif; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+  @media (max-width: 600px) { :root { --gutter-l: max(16px, env(safe-area-inset-left, 0px)); --gutter-r: max(16px, env(safe-area-inset-right, 0px)); } }
+  h1, h2, h3 { text-wrap: balance; }
+
+  /* progress bar */
+  #progress { position: fixed; top: env(safe-area-inset-top, 0px); right: 0; height: 3px; width: 0; z-index: 40;
+    background: linear-gradient(270deg, #e4572e, #f3a712, #2a9d8f, #1f3a5f, #d1495b); pointer-events: none; }
 
   /* header */
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
   header.top {
-    position: sticky; top: 0; z-index: 20;
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
     background: color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
   }
   header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
-  .logo { font-family: "Frank Ruhl Libre", serif; font-weight: 700; font-size: 24px; text-decoration: none; letter-spacing: .01em; display: flex; align-items: center; gap: 10px; }
+  .logo { font-family: var(--display); font-weight: 700; font-size: 24px; text-decoration: none; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
   .logo svg { width: 28px; height: 28px; }
-  nav.links { display: flex; gap: 24px; align-items: center; font-size: 16px; }
-  nav.links a { text-decoration: none; color: var(--muted); }
+  nav.links { display: flex; gap: 22px; align-items: center; font-size: 16px; }
+  nav.links a { text-decoration: none; color: var(--muted); white-space: nowrap; }
   nav.links a:hover { color: var(--ink); }
-  .theme-btn {
-    border: 1px solid var(--line); background: transparent; color: var(--ink);
-    width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+  .icon-btn {
+    border: 1px solid var(--line); background: transparent; color: var(--ink); position: relative;
+    width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: grid; place-items: center; flex: 0 0 auto;
   }
-  @media (max-width: 640px) { nav.links a.opt { display: none; } nav.links { gap: 16px; } }
+  .icon-btn .count { position: absolute; top: -4px; left: -4px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--accent); color: var(--accent-ink);
+    font-size: 11px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
+  @media (max-width: 760px) { nav.links a.opt { display: none; } nav.links { gap: 12px; } }
 
   /* hero */
-  .hero { padding: 72px 0 56px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; }
-  .eyebrow { font-size: 14px; color: var(--accent); font-weight: 600; margin: 0 0 16px; }
-  .hero h1 { font-family: "Frank Ruhl Libre", serif; font-weight: 500; font-size: clamp(44px, 7vw, 88px); line-height: 1.02; margin: 0 0 24px; }
+  .hero-band { position: relative; overflow: hidden; }
+  #paint { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .hero { position: relative; z-index: 1; padding-block: 72px 56px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; }
+  .eyebrow { font-size: 15px; color: var(--accent); font-weight: 600; margin: 0 0 16px; }
+  .hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(48px, 7.4vw, 96px); line-height: 1; margin: 0 0 24px; }
   .hero h1 span { display: block; color: var(--muted); font-weight: 300; }
-  .hero p.lead { font-size: 20px; color: var(--muted); max-width: 34ch; margin: 0 0 32px; }
+  .hero p.lead { font-size: 20px; color: var(--muted); max-width: 34ch; margin: 0 0 28px; }
+  .paint-hint { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); margin-top: 22px; }
+  @media (hover: none) { .paint-hint { display: none; } }
   .btn {
-    display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: 999px;
-    background: var(--ink); color: var(--bg); text-decoration: none; font-weight: 600; font-size: 16px; border: 0; cursor: pointer;
-    font-family: inherit;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 26px; border-radius: 999px;
+    background: var(--ink); color: var(--bg); text-decoration: none; font-weight: 600; font-size: 16px; border: 0; cursor: pointer; font-family: inherit;
   }
   .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
   .btn.accent { background: var(--accent); color: var(--accent-ink); }
+  .btn.small { padding: 9px 16px; font-size: 14px; }
   .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
-  .hero-art { position: relative; aspect-ratio: 4/5; }
-  .hero-art .frame { position: absolute; border-radius: 2px; overflow: hidden; box-shadow: var(--shadow); background: var(--surface); }
-  .hero-art .f1 { inset: 0 18% 14% 0; }
-  .hero-art .f2 { width: 46%; aspect-ratio: 1; left: 0; bottom: 0; border: 8px solid var(--surface); }
-  .hero-art .frame img, .hero-art .frame svg { width: 100%; height: 100%; object-fit: cover; }
+
+  .stack { position: relative; aspect-ratio: 1 / 1; width: 100%; max-width: 520px; margin: 0 auto; perspective: 1400px; }
+  .stack-inner { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .25s ease-out; }
+  .stack .card3d { position: absolute; box-shadow: 0 30px 60px -20px rgba(0,0,0,.45); background: var(--surface); padding: 10px; }
+  .stack .card3d img { width: 100%; height: auto; }
+  .stack .c1 { width: 62%; top: 4%; right: 2%; transform: translateZ(40px) rotate(-3deg); }
+  .stack .c2 { width: 50%; top: 40%; left: 0; transform: translateZ(110px) rotate(4deg); }
+  .stack .c3 { width: 40%; bottom: 0; right: 12%; transform: translateZ(170px) rotate(-6deg); }
   @media (max-width: 860px) {
-    .hero { grid-template-columns: 1fr; padding: 40px 0 32px; gap: 40px; }
-    .hero-art { max-width: 460px; width: 100%; margin: 0 auto; }
+    .hero { grid-template-columns: 1fr; padding-block: 40px 32px; gap: 32px; }
+    .stack { max-width: 420px; }
   }
 
-  /* statement */
-  section { padding: 88px 0; }
-  .statement { background: var(--surface); border-block: 1px solid var(--line); }
-  .statement .grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start; }
-  .section-label { font-size: 14px; color: var(--muted); font-weight: 600; margin: 0 0 12px; }
-  h2 { font-family: "Frank Ruhl Libre", serif; font-weight: 500; font-size: clamp(32px, 4.5vw, 52px); line-height: 1.1; margin: 0 0 20px; }
-  .poem { font-family: "Frank Ruhl Libre", serif; font-size: clamp(22px, 2.6vw, 30px); line-height: 1.55; font-weight: 300; margin: 0; }
+  /* sections */
+  section { padding-block: 88px; }
+  .band { background: var(--surface); border-block: 1px solid var(--line); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start; }
+  .grid2 > * { min-width: 0; }
+  .section-label { font-size: 15px; color: var(--muted); font-weight: 600; margin: 0 0 12px; }
+  h2 { font-family: var(--display); font-weight: 500; font-size: clamp(32px, 4.5vw, 52px); line-height: 1.1; margin: 0 0 20px; }
+  .poem { font-family: var(--display); font-size: clamp(22px, 2.6vw, 30px); line-height: 1.55; font-weight: 300; margin: 0; }
   .poem .stanza { margin: 0 0 1.1em; }
   .poem em { font-style: normal; color: var(--accent); font-weight: 500; }
   .signature { margin-top: 28px; font-size: 16px; color: var(--muted); }
-  @media (max-width: 860px) { .statement .grid { grid-template-columns: 1fr; gap: 24px; } section { padding: 64px 0; } }
+  @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; gap: 24px; } section { padding-block: 64px; } }
+
+  /* 3D room */
+  .room { background: var(--room); color: var(--room-ink); padding-block: 72px 0; }
+  .room .section-label { color: #b8ae9e; }
+  .room-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 28px; }
+  .room-head p { margin: 0; color: #c9c0b1; max-width: 46ch; }
+  .room-stage { position: relative; height: clamp(440px, 76vh, 780px); background: #1a1612; overflow: hidden; user-select: none; -webkit-user-select: none; }
+  .room-stage:fullscreen { height: 100%; }
+  #roomCanvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
+  #roomCanvas.dragging { cursor: grabbing; }
+  #roomCanvas.hovering { cursor: pointer; }
+  .room-msg { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; color: #d9d0c1; font-family: var(--display); font-size: 22px; }
+  .room-tip { position: absolute; pointer-events: none; transform: translate(50%, -130%); background: rgba(20,17,14,.88); color: #f3ede2; padding: 6px 12px; border-radius: 8px; font-size: 14px; white-space: nowrap; }
+  .room-ui { position: absolute; top: 16px; left: max(16px, env(safe-area-inset-left, 0px)); display: flex; gap: 8px; flex-wrap: wrap; }
+  .room-ui button, .room-focus button.nav {
+    background: rgba(20,17,14,.72); color: #f3ede2; border: 1px solid rgba(243,237,226,.18); border-radius: 999px;
+    height: 40px; min-width: 40px; padding: 0 14px; cursor: pointer; font-size: 15px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .room-ui button[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: transparent; }
+  .room-focus {
+    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: min(560px, calc(100% - 32px));
+    background: rgba(20,17,14,.86); color: #f3ede2; border-radius: 18px; padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(243,237,226,.12);
+  }
+  .room-focus .t { flex: 1; min-width: 0; }
+  .room-focus b { display: block; font-family: var(--display); font-weight: 500; font-size: 22px; line-height: 1.2; }
+  .room-focus small { color: #b8ae9e; font-size: 13px; }
+  .room-focus .btn { padding: 10px 16px; font-size: 14px; background: var(--accent); color: #fff; }
+  .room-hint { position: absolute; bottom: 20px; right: 50%; transform: translateX(50%); background: rgba(20,17,14,.7); color: #e8e0d2; font-size: 14px; padding: 8px 16px; border-radius: 999px; pointer-events: none; transition: opacity .6s; white-space: nowrap; }
+  @media (max-width: 560px) { .room-focus .btn { padding: 10px 12px; } .room-focus b { font-size: 18px; } }
 
   /* gallery */
-  .gallery-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 32px; }
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .gallery-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+  .toolbar { display: grid; gap: 14px; margin-bottom: 32px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .row .lbl { font-size: 14px; color: var(--muted); margin-inline-end: 6px; min-width: 44px; }
   .chip {
-    border: 1px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-size: 15px;
-    padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: transparent; color: var(--muted); font-size: 15px;
+    padding: 7px 15px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
   }
   .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .swatch { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--line); cursor: pointer; padding: 0; }
+  .swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--ink); }
+  .showing { font-size: 14px; color: var(--muted); }
   .grid-art { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px 28px; }
   @media (max-width: 960px) { .grid-art { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 560px) { .grid-art { grid-template-columns: 1fr; } }
-  .card { cursor: pointer; text-align: start; background: none; border: 0; padding: 0; color: inherit; font: inherit; }
-  .card .pic { position: relative; aspect-ratio: 3/2; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
-  .card .pic img, .card .pic svg { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
-  .card:hover .pic img, .card:hover .pic svg { transform: scale(1.03); }
-  .badge { position: absolute; top: 12px; right: 12px; background: var(--surface); color: var(--ink); font-size: 13px; padding: 4px 10px; border-radius: 999px; font-weight: 600; }
-  .badge.sold { background: var(--ink); color: var(--bg); }
-  .badge.ph { left: 12px; right: auto; background: rgba(0,0,0,.55); color: #fff; font-weight: 400; }
+  .card { position: relative; min-width: 0; }
+  .card .open { display: block; width: 100%; text-align: start; background: none; border: 0; padding: 0; cursor: pointer; }
+  .card .pic { position: relative; aspect-ratio: 3/2; max-width: 100%; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; transition: transform .35s ease, box-shadow .35s ease; transform-style: preserve-3d; }
+  .card .pic img { width: 100%; height: 100%; object-fit: cover; }
+  .card .pic::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s;
+    background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,.35), transparent 55%); }
+  .card:hover .pic::after { opacity: 1; }
+  .badge { position: absolute; top: 12px; right: 12px; background: var(--ink); color: var(--bg); font-size: 13px; padding: 4px 10px; border-radius: 999px; font-weight: 600; }
+  .fav {
+    position: absolute; top: 10px; left: 10px; z-index: 2; width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
+    background: rgba(255,255,255,.85); color: #1c1a17; display: grid; place-items: center; box-shadow: 0 4px 14px -4px rgba(0,0,0,.3);
+  }
+  .fav svg { width: 20px; height: 20px; transition: transform .2s; }
+  .fav[aria-pressed="true"] svg { fill: #e11d48; stroke: #e11d48; transform: scale(1.12); }
   .card .meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; align-items: baseline; }
-  .card h3 { font-family: "Frank Ruhl Libre", serif; font-weight: 500; font-size: 22px; margin: 0; }
+  .card h3 { font-family: var(--display); font-weight: 500; font-size: 22px; margin: 0; }
   .card .sub { font-size: 15px; color: var(--muted); margin-top: 2px; }
   .card .price { font-weight: 600; white-space: nowrap; }
+  .dots { display: flex; gap: 4px; margin-top: 8px; }
+  .dots i { width: 14px; height: 14px; border-radius: 50%; display: block; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+  .empty { grid-column: 1 / -1; text-align: center; padding: 48px 16px; color: var(--muted); border: 1px dashed var(--line); border-radius: 12px; }
 
   /* about */
-  .about .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-  .about p { font-size: 19px; margin: 0 0 18px; }
   .facts { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); margin-top: 32px; }
-  .facts div { padding: 20px 0 0; }
-  .facts b { display: block; font-family: "Frank Ruhl Libre", serif; font-size: 28px; font-weight: 500; }
+  .facts div { padding-top: 20px; }
+  .facts b { display: block; font-family: var(--display); font-size: 28px; font-weight: 500; font-variant-numeric: tabular-nums; }
   .facts span { font-size: 14px; color: var(--muted); }
-  .styles-list { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--line); }
+  .styles-list { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
   .styles-list div { border-bottom: 1px solid var(--line); padding: 22px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
-  .styles-list b { font-family: "Frank Ruhl Libre", serif; font-weight: 500; font-size: clamp(24px, 3vw, 34px); }
+  .styles-list b { font-family: var(--display); font-weight: 500; font-size: clamp(24px, 3vw, 34px); }
   .styles-list span { color: var(--muted); font-size: 15px; text-align: left; }
-  @media (max-width: 860px) { .about .grid { grid-template-columns: 1fr; gap: 40px; } }
 
   /* contact */
   .contact { background: var(--ink); color: var(--bg); }
-  .contact .grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px; }
+  .contact .grid2 { grid-template-columns: 1fr 1.2fr; }
   .contact .section-label, .contact .muted { color: color-mix(in srgb, var(--bg) 65%, var(--ink)); }
   form { display: grid; gap: 16px; }
   label { display: grid; gap: 6px; font-size: 15px; }
   input, select, textarea {
-    font: inherit; font-size: 17px; padding: 12px 14px; border-radius: 8px;
+    font: inherit; font-size: 17px; padding: 12px 14px; border-radius: 8px; min-width: 0;
     border: 1px solid color-mix(in srgb, var(--bg) 25%, var(--ink)); background: color-mix(in srgb, var(--bg) 6%, var(--ink)); color: var(--bg);
   }
-  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   textarea { min-height: 120px; resize: vertical; }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .contact .btn { background: var(--bg); color: var(--ink); }
   .contact .btn.wa { background: #25d366; color: #0b2e17; }
   .direct { margin-top: 28px; display: grid; gap: 6px; font-size: 17px; }
-  .direct a { text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--bg) 35%, var(--ink)); }
-  @media (max-width: 860px) { .contact .grid { grid-template-columns: 1fr; gap: 32px; } }
+  @media (max-width: 860px) { .contact .grid2 { grid-template-columns: 1fr; gap: 32px; } }
   @media (max-width: 480px) { .two { grid-template-columns: 1fr; } }
 
-  footer { padding: 32px 0; font-size: 14px; color: var(--muted); }
+  footer { padding-block: 32px; font-size: 14px; color: var(--muted); }
   footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
   /* lightbox */
-  dialog { border: 0; padding: 0; background: var(--bg); color: var(--ink); max-width: min(1100px, 94vw); width: 100%; border-radius: 4px; box-shadow: var(--shadow); }
-  dialog::backdrop { background: rgba(10,9,8,.8); }
-  .lb { display: grid; grid-template-columns: 1.4fr 1fr; }
-  .lb .img { background: var(--surface); display: grid; place-items: center; min-height: 300px; }
-  .lb .img { display: flex; flex-direction: column; }
-  #lbImg { flex: 1; display: grid; place-items: center; width: 100%; }
-  #lbImg img { width: 100%; max-height: 74vh; object-fit: contain; }
-  .shots { display: flex; gap: 8px; padding: 10px; overflow-x: auto; width: 100%; }
+  dialog { border: 0; padding: 0; background: var(--bg); color: var(--ink); max-width: min(1180px, 96vw); width: 100%; border-radius: 6px; box-shadow: var(--shadow); max-height: 94vh; }
+  dialog::backdrop { background: rgba(10,9,8,.82); }
+  .lb { display: grid; grid-template-columns: 1.5fr 1fr; }
+  .lb > * { min-width: 0; }
+  .media { position: relative; background: var(--surface); display: flex; flex-direction: column; }
+  .tabs { display: flex; gap: 6px; padding: 12px; flex-wrap: wrap; }
+  .tabs button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 6px 14px; cursor: pointer; font-size: 14px; }
+  .tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .pane { height: min(66vh, 600px); position: relative; touch-action: pan-y; }
+  #lbPhoto { width: 100%; height: 100%; display: grid; place-items: center; }
+  #lbPhoto img { width: 100%; height: 100%; object-fit: contain; }
+  .shots { display: flex; gap: 8px; padding: 10px 12px 12px; overflow-x: auto; }
   .shots button { flex: 0 0 auto; width: 72px; height: 48px; padding: 0; border: 2px solid transparent; border-radius: 3px; overflow: hidden; cursor: pointer; background: none; }
   .shots button[aria-pressed="true"] { border-color: var(--accent); }
   .shots img { width: 100%; height: 100%; object-fit: cover; }
-  .lb .info { padding: 40px 32px; display: flex; flex-direction: column; gap: 14px; }
-  .lb h3 { font-family: "Frank Ruhl Libre", serif; font-size: 34px; font-weight: 500; margin: 0; line-height: 1.15; }
-  .lb dl { margin: 8px 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; font-size: 16px; }
+  #lb3d { width: 100%; height: 100%; cursor: grab; touch-action: none; display: block; }
+  .pane-note { position: absolute; bottom: 12px; right: 50%; transform: translateX(50%); font-size: 13px; color: var(--muted); background: var(--bg); padding: 5px 12px; border-radius: 999px; white-space: nowrap; pointer-events: none; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
+  .pane-tools { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; }
+
+  .wall { position: absolute; inset: 0; background: var(--wall, #e9e4da); overflow: hidden; transition: background .4s; }
+  .wall::after { content: ""; position: absolute; inset: auto 0 0 0; height: 18%; background: linear-gradient(#8a6a4c, #6f5339); }
+  .wall .light { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 18%, rgba(255,250,240,.5), transparent 60%); }
+  .wall .art { position: absolute; left: 50%; bottom: 50%; transform: translateX(-50%); box-shadow: 0 18px 30px -12px rgba(0,0,0,.5); border: 5px solid #1c1a17; }
+  .wall .art img { width: 100%; height: auto; }
+  .wall svg { position: absolute; left: 50%; bottom: 17%; transform: translateX(-50%); width: 62%; z-index: 1; }
+  .wall .plant { position: absolute; bottom: 17%; right: 6%; left: auto; transform: none; width: 12%; }
+  .wall-colors { display: flex; gap: 8px; }
+  .wall-colors button { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2); cursor: pointer; padding: 0; }
+  .wall-colors button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--accent); }
+
+  .lb .info { padding: 36px 30px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: 94vh; }
+  .lb h3 { font-family: var(--display); font-size: 34px; font-weight: 500; margin: 0; line-height: 1.15; }
+  .lb dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; font-size: 16px; }
+  .lb dl:empty { display: none; }
   .lb dt { color: var(--muted); }
   .lb dd { margin: 0; }
   .lb .price { font-size: 26px; font-weight: 600; }
-  .lb .close { position: absolute; top: 12px; left: 12px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--surface); color: var(--ink); cursor: pointer; font-size: 22px; z-index: 2; }
-  @media (max-width: 760px) {
-    dialog { max-height: 94vh; overflow: auto; }
+  .palette { display: flex; border-radius: 8px; overflow: hidden; height: 34px; }
+  .palette i { flex: 1; }
+  .lb-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .lb-nav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .lb .close { position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--bg); color: var(--ink); cursor: pointer; font-size: 22px; z-index: 3; box-shadow: var(--shadow); }
+  .toast { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: 15px; opacity: 0; transition: .3s; z-index: 60; pointer-events: none; max-width: calc(100% - 32px); overflow-wrap: anywhere; }
+  .toast.on { opacity: 1; transform: translateX(-50%); }
+  @media (max-width: 860px) {
     .lb { grid-template-columns: 1fr; }
-    .lb .info { padding: 24px 20px 28px; }
+    dialog { overflow-y: auto; }
+    .pane { height: 52vh; }
+    .lb .info { padding: 22px 20px 28px; max-height: none; }
+    .lb .close { right: auto; left: 10px; }
   }
+  @media (prefers-reduced-motion: reduce) { .card .pic, .stack-inner { transition: none; } }
 </style>
 </head>
 <body>
+<div id="progress"></div>
 
 <header class="top">
   <div class="wrap">
@@ -196,11 +294,16 @@
       טל לוי
     </a>
     <nav class="links">
+      <a href="#room">חדר תצוגה</a>
       <a href="#works">עבודות</a>
       <a href="#statement" class="opt">הצהרת אמן</a>
       <a href="#about" class="opt">אודות</a>
-      <a href="#contact">רכישה</a>
-      <button class="theme-btn" id="themeBtn" aria-label="החלפת מצב כהה / בהיר">
+      <a href="#contact" class="opt">רכישה</a>
+      <button class="icon-btn" id="favBtn" aria-label="המועדפים שלי">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.1 1.7-1.9 3.2-3.1 5.3-3.1 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>
+        <span class="count" id="favCount" hidden>0</span>
+      </button>
+      <button class="icon-btn" id="themeBtn" aria-label="החלפת מצב כהה / בהיר">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
       </button>
     </nav>
@@ -208,24 +311,34 @@
 </header>
 
 <main>
-  <div class="wrap hero">
-    <div>
-      <p class="eyebrow">אבסטרקט · סוריאליזם · אקספרסיוניזם</p>
-      <h1>רגשות<br>וצבעים<span>צבעים ורגשות</span></h1>
-      <p class="lead">ציורים מקוריים של טל לוי, אמן רב־תחומי מתל אביב. כל ציור הוא פיסה קטנה מהנפש, ועכשיו הוא יכול להיות על הקיר שלך.</p>
-      <div class="btn-row">
-        <a class="btn" href="#works">לצפייה בעבודות</a>
-        <a class="btn ghost" href="#contact">לרכישת ציור</a>
+  <div class="hero-band" id="heroBand">
+    <canvas id="paint" aria-hidden="true"></canvas>
+    <div class="wrap hero">
+      <div>
+        <p class="eyebrow">אבסטרקט · סוריאליזם · אקספרסיוניזם</p>
+        <h1>רגשות<br>וצבעים<span>צבעים ורגשות</span></h1>
+        <p class="lead">38 ציורים מקוריים של טל לוי, אמן רב־תחומי מתל אביב. אפשר להסתובב ביניהם בחדר תצוגה תלת־ממדי, לחפש לפי צבע, ולראות איך כל ציור ייראה על הקיר שלך.</p>
+        <div class="btn-row">
+          <a class="btn" href="#room">כניסה לחדר התצוגה</a>
+          <a class="btn ghost" href="#works">לכל העבודות</a>
+        </div>
+        <p class="paint-hint">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 3l3 3-9 9-4 1 1-4 9-9zM4 20c2 0 3-1 3-3"/></svg>
+          הזיזו את העכבר כאן כדי לצייר. גם טעות כבר אינה טעות.
+        </p>
       </div>
-    </div>
-    <div class="hero-art" aria-hidden="true">
-      <div class="frame f1" id="heroA"></div>
-      <div class="frame f2" id="heroB"></div>
+      <div class="stack" id="stack" aria-hidden="true">
+        <div class="stack-inner" id="stackInner">
+          <div class="card3d c1"><img src="images/crop/w31.jpg" alt=""></div>
+          <div class="card3d c2"><img src="images/crop/w05.jpg" alt=""></div>
+          <div class="card3d c3"><img src="images/crop/w36.jpg" alt=""></div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <section class="statement" id="statement">
-    <div class="wrap grid">
+  <section class="band" id="statement">
+    <div class="wrap grid2">
       <div>
         <p class="section-label">הצהרת אמן</p>
         <h2>כל סימן מכחול<br>זו אבן</h2>
@@ -236,7 +349,36 @@
           <p class="stanza">השינוי הפיזי מורגש בשניות<br>ברגע שאני מתחיל יצירה<br>המקשרת בין הרגש והצבעים<br>צץ מקום שליו יותר<br>המניח את המחשבות במקומם<br>ונותן לי לפעול</p>
           <p class="stanza">כל ציור הוא פיסה קטנה מהנפש<br>השלמה<br>כל סימן מכחול זו אבן<br>כל שרבוט<br>זה הצהרה בכולי קולות<br><em>גם טעות כבר אינה טעות</em></p>
         </div>
-        <p class="signature">— טל לוי</p>
+        <p class="signature">טל לוי</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="room" id="room">
+    <div class="wrap room-head">
+      <div>
+        <p class="section-label">חדר תצוגה</p>
+        <h2 style="margin:0">הגלריה בתלת־ממד</h2>
+      </div>
+      <p>גררו כדי להסתכל מסביב. לחיצה על ציור מקרבת אליו, ומשם אפשר לעבור בין הציורים או לפתוח את הפרטים.</p>
+    </div>
+    <div class="room-stage" id="roomStage" tabindex="-1">
+      <canvas id="roomCanvas" aria-label="חדר תצוגה תלת־ממדי עם 38 הציורים"></canvas>
+      <div class="room-msg" id="roomMsg">החדר נטען…</div>
+      <div class="room-tip" id="roomTip" hidden></div>
+      <div class="room-ui">
+        <button type="button" id="roomTour" aria-pressed="false">סיור מודרך</button>
+        <button type="button" id="roomIn" aria-label="התקרבות">+</button>
+        <button type="button" id="roomOut" aria-label="התרחקות">−</button>
+        <button type="button" id="roomFull">מסך מלא</button>
+      </div>
+      <div class="room-hint" id="roomHint">גררו כדי להסתובב · לחצו על ציור</div>
+      <div class="room-focus" id="roomFocus" hidden>
+        <button type="button" class="nav" id="rfPrev" aria-label="הציור הקודם">›</button>
+        <div class="t"><small id="rfStyle"></small><b id="rfTitle"></b></div>
+        <button type="button" class="nav" id="rfNext" aria-label="הציור הבא">‹</button>
+        <button type="button" class="btn" id="rfOpen">לפרטים</button>
+        <button type="button" class="nav" id="rfClose" aria-label="חזרה למבט כללי">×</button>
       </div>
     </div>
   </section>
@@ -248,14 +390,21 @@
           <p class="section-label">עבודות למכירה</p>
           <h2 style="margin:0">הגלריה</h2>
         </div>
-        <div class="filters" id="filters" role="group" aria-label="סינון לפי סגנון"></div>
+        <div class="btn-row">
+          <button class="btn ghost small" type="button" id="surprise">הפתיעו אותי</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="row" id="styleRow" role="group" aria-label="סינון לפי סגנון"><span class="lbl">סגנון</span></div>
+        <div class="row" id="colorRow" role="group" aria-label="סינון לפי צבע"><span class="lbl">צבע</span></div>
+        <div class="row"><span class="showing" id="showing"></span></div>
       </div>
       <div class="grid-art" id="grid"></div>
     </div>
   </section>
 
-  <section class="statement about" id="about">
-    <div class="wrap grid">
+  <section class="band" id="about">
+    <div class="wrap grid2" style="grid-template-columns:1fr 1fr;align-items:center">
       <div>
         <p class="section-label">אודות</p>
         <h2>טל לוי</h2>
@@ -276,7 +425,7 @@
   </section>
 
   <section class="contact" id="contact">
-    <div class="wrap grid">
+    <div class="wrap grid2">
       <div>
         <p class="section-label">רכישה והזמנות</p>
         <h2>מצאת ציור<br>שמדבר אליך?</h2>
@@ -285,13 +434,13 @@
       </div>
       <form id="inquiry" novalidate>
         <div class="two">
-          <label>שם<input name="name" required autocomplete="name"></label>
-          <label>טלפון או מייל<input name="reach" required></label>
+          <label for="fName">שם<input id="fName" name="name" required autocomplete="name"></label>
+          <label for="fReach">טלפון או מייל<input id="fReach" name="reach" required></label>
         </div>
-        <label>הציור שמעניין אותי
+        <label for="workSelect">הציור שמעניין אותי
           <select name="work" id="workSelect"></select>
         </label>
-        <label>הודעה<textarea name="msg" placeholder="שאלה, בקשה לצפייה, או רעיון לציור בהזמנה"></textarea></label>
+        <label for="fMsg">הודעה<textarea id="fMsg" name="msg" placeholder="שאלה, בקשה לצפייה, או רעיון לציור בהזמנה"></textarea></label>
         <div class="btn-row">
           <button class="btn wa" type="submit" data-via="whatsapp">שליחה בוואטסאפ</button>
           <button class="btn" type="submit" data-via="email">שליחה במייל</button>
@@ -312,16 +461,61 @@
 <dialog id="lb" aria-label="פרטי הציור">
   <button class="close" id="lbClose" aria-label="סגירה">×</button>
   <div class="lb">
-    <div class="img"><div id="lbImg"></div><div class="shots" id="lbShots"></div></div>
+    <div class="media">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="photo" aria-selected="true">צילום</button>
+        <button type="button" role="tab" data-tab="three" aria-selected="false">תלת־ממד</button>
+        <button type="button" role="tab" data-tab="wall" aria-selected="false">על הקיר שלי</button>
+      </div>
+      <div class="pane" id="paneWrap">
+        <div id="lbPhoto"></div>
+        <canvas id="lb3d" hidden></canvas>
+        <div class="wall" id="lbWall" hidden>
+          <div class="light"></div>
+          <div class="art" id="wallArt"><img alt=""></div>
+          <svg viewBox="0 0 400 130" aria-hidden="true">
+            <rect x="20" y="40" width="360" height="62" rx="16" fill="#5b6b6a"/>
+            <rect x="0" y="52" width="46" height="66" rx="14" fill="#4e5d5c"/>
+            <rect x="354" y="52" width="46" height="66" rx="14" fill="#4e5d5c"/>
+            <rect x="40" y="18" width="156" height="50" rx="14" fill="#687a79"/>
+            <rect x="204" y="18" width="156" height="50" rx="14" fill="#687a79"/>
+            <rect x="30" y="112" width="8" height="18" fill="#2b2622"/><rect x="362" y="112" width="8" height="18" fill="#2b2622"/>
+          </svg>
+          <svg class="plant" viewBox="0 0 60 120" aria-hidden="true">
+            <path d="M30 70 C10 50 6 20 14 6 C26 24 30 46 30 70 C34 40 40 18 52 10 C56 34 46 56 30 70" fill="#4d7c4a"/>
+            <path d="M16 70 h28 l-4 48 h-20z" fill="#b86b4b"/>
+          </svg>
+          <div class="pane-tools"><div class="wall-colors" id="wallColors"></div></div>
+          <div class="pane-note">המחשה בקנה מידה משוער, ליד ספה ברוחב 2.1 מטר</div>
+        </div>
+        <div class="pane-note" id="note3d" hidden>גררו כדי לסובב · הזיזו את העכבר כדי לראות את משיכות המכחול באור</div>
+        <div class="pane-tools" id="tools3d" hidden><button class="btn ghost small" type="button" id="flip3d">הפכו את הקנבס</button></div>
+      </div>
+      <div class="shots" id="lbShots"></div>
+    </div>
     <div class="info">
       <p class="section-label" id="lbStyle" style="margin:0"></p>
       <h3 id="lbTitle"></h3>
       <dl id="lbMeta"></dl>
+      <div>
+        <p class="section-label" style="margin:0 0 6px">הצבעים בציור</p>
+        <div class="palette" id="lbPalette"></div>
+      </div>
       <div class="price" id="lbPrice"></div>
       <a class="btn accent" id="lbBuy" href="#contact">אני רוצה את הציור הזה</a>
+      <div class="lb-actions">
+        <button class="btn ghost small" type="button" id="lbFav">הוספה למועדפים</button>
+        <button class="btn ghost small" type="button" id="lbShare">העתקת קישור לציור</button>
+      </div>
+      <div class="lb-nav">
+        <button class="btn ghost small" type="button" id="lbPrev">› הקודם</button>
+        <span id="lbPos"></span>
+        <button class="btn ghost small" type="button" id="lbNext">הבא ‹</button>
+      </div>
     </div>
   </div>
 </dialog>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 /* ============================================================
@@ -335,167 +529,651 @@ const CONFIG = {
 
 /* ============================================================
    הציורים: כל שורה היא ציור אחד.
-   title: שם הציור · year / size / medium: שנה, מידות, טכניקה (ריק = לא מוצג)
+   title: שם הציור · year / size / medium: שנה, מידות (רוחב×גובה בס״מ), טכניקה. שדה ריק לא מוצג.
    style: "abstract" | "surreal" | "expressionism"
    price: מספר בשקלים, או null כדי להציג "מחיר לפי פנייה"
    sold: true כשהציור נמכר
-   image: הצילום המלא · details: צילומי תקריב
+   image: הצילום המלא · crop: הציור בלבד (לתלת־ממד) · details: צילומי תקריב
+   colors / fam: הצבעים העיקריים (חושבו אוטומטית מהצילום)
    ============================================================ */
 const PAINTINGS = [
-  { title: "עבודה 01", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w01.jpg", details: ["images/w01-d1.jpg", "images/w01-d2.jpg", "images/w01-d3.jpg"] },
-  { title: "עבודה 02", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w02.jpg", details: ["images/w02-d1.jpg"] },
-  { title: "עבודה 03", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w03.jpg", details: ["images/w03-d1.jpg", "images/w03-d2.jpg"] },
-  { title: "עבודה 04", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w04.jpg", details: ["images/w04-d1.jpg"] },
-  { title: "עבודה 05", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w05.jpg", details: ["images/w05-d1.jpg", "images/w05-d2.jpg", "images/w05-d3.jpg", "images/w05-d4.jpg"] },
-  { title: "עבודה 06", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w06.jpg", details: ["images/w06-d1.jpg", "images/w06-d2.jpg"] },
-  { title: "עבודה 07", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w07.jpg", details: ["images/w07-d1.jpg"] },
-  { title: "עבודה 08", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w08.jpg", details: ["images/w08-d1.jpg"] },
-  { title: "עבודה 09", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w09.jpg", details: ["images/w09-d1.jpg"] },
-  { title: "עבודה 10", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w10.jpg", details: ["images/w10-d1.jpg"] },
-  { title: "עבודה 11", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w11.jpg", details: ["images/w11-d1.jpg"] },
-  { title: "עבודה 12", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w12.jpg", details: ["images/w12-d1.jpg"] },
-  { title: "עבודה 13", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w13.jpg", details: ["images/w13-d1.jpg", "images/w13-d2.jpg"] },
-  { title: "עבודה 14", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w14.jpg", details: ["images/w14-d1.jpg"] },
-  { title: "עבודה 15", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w15.jpg", details: ["images/w15-d1.jpg"] },
-  { title: "עבודה 16", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w16.jpg", details: ["images/w16-d1.jpg", "images/w16-d2.jpg"] },
-  { title: "עבודה 17", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w17.jpg", details: ["images/w17-d1.jpg"] },
-  { title: "עבודה 18", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w18.jpg", details: ["images/w18-d1.jpg"] },
-  { title: "עבודה 19", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w19.jpg", details: ["images/w19-d1.jpg"] },
-  { title: "עבודה 20", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w20.jpg", details: ["images/w20-d1.jpg", "images/w20-d2.jpg"] },
-  { title: "עבודה 21", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w21.jpg", details: ["images/w21-d1.jpg"] },
-  { title: "עבודה 22", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w22.jpg", details: ["images/w22-d1.jpg"] },
-  { title: "עבודה 23", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w23.jpg", details: ["images/w23-d1.jpg"] },
-  { title: "עבודה 24", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w24.jpg", details: ["images/w24-d1.jpg"] },
-  { title: "עבודה 25", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w25.jpg", details: ["images/w25-d1.jpg"] },
-  { title: "עבודה 26", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w26.jpg", details: [] },
-  { title: "עבודה 27", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w27.jpg", details: ["images/w27-d1.jpg", "images/w27-d2.jpg"] },
-  { title: "עבודה 28", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w28.jpg", details: ["images/w28-d1.jpg", "images/w28-d2.jpg"] },
-  { title: "עבודה 29", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w29.jpg", details: ["images/w29-d1.jpg", "images/w29-d2.jpg"] },
-  { title: "עבודה 30", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w30.jpg", details: ["images/w30-d1.jpg"] },
-  { title: "עבודה 31", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w31.jpg", details: ["images/w31-d1.jpg", "images/w31-d2.jpg"] },
-  { title: "עבודה 32", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w32.jpg", details: ["images/w32-d1.jpg"] },
-  { title: "עבודה 33", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w33.jpg", details: ["images/w33-d1.jpg"] },
-  { title: "עבודה 34", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w34.jpg", details: ["images/w34-d1.jpg", "images/w34-d2.jpg"] },
-  { title: "עבודה 35", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w35.jpg", details: ["images/w35-d1.jpg"] },
-  { title: "עבודה 36", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w36.jpg", details: ["images/w36-d1.jpg", "images/w36-d2.jpg", "images/w36-d3.jpg"] },
-  { title: "עבודה 37", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w37.jpg", details: ["images/w37-d1.jpg", "images/w37-d2.jpg"] },
-  { title: "עבודה 38", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w38.jpg", details: ["images/w38-d1.jpg", "images/w38-d2.jpg", "images/w38-d3.jpg", "images/w38-d4.jpg"] },
+  { title: "עבודה 01", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w01.jpg", crop: "images/crop/w01.jpg", ratio: 1.434, colors: ["#dd9d8c", "#e5cec1", "#b36863", "#e4bca5", "#6d9eab"], fam: ["red", "orange"], details: ["images/w01-d1.jpg", "images/w01-d2.jpg", "images/w01-d3.jpg"] },
+  { title: "עבודה 02", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w02.jpg", crop: "images/crop/w02.jpg", ratio: 1.44, colors: ["#753e51", "#b27179", "#b39299", "#bcafb3", "#d7bbab"], fam: ["pink", "red"], details: ["images/w02-d1.jpg"] },
+  { title: "עבודה 03", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w03.jpg", crop: "images/crop/w03.jpg", ratio: 1.218, colors: ["#cecacf", "#946881", "#d6d0d5", "#d8d6db", "#cdb6c0"], fam: ["light", "pink"], details: ["images/w03-d1.jpg", "images/w03-d2.jpg"] },
+  { title: "עבודה 04", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w04.jpg", crop: "images/crop/w04.jpg", ratio: 1.446, colors: ["#444555", "#825b66", "#b88b95", "#7c7d94", "#cdb6bb"], fam: ["black", "pink", "red"], details: ["images/w04-d1.jpg"] },
+  { title: "עבודה 05", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w05.jpg", crop: "images/crop/w05.jpg", ratio: 1.401, colors: ["#1c2231", "#153163", "#6b9abf", "#becfde", "#dfdede"], fam: ["black", "blue"], details: ["images/w05-d1.jpg", "images/w05-d2.jpg", "images/w05-d3.jpg", "images/w05-d4.jpg"] },
+  { title: "עבודה 06", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w06.jpg", crop: "images/crop/w06.jpg", ratio: 1.459, colors: ["#01a1cd", "#0294be", "#00a2ce", "#336780", "#1091b8"], fam: ["blue"], details: ["images/w06-d1.jpg", "images/w06-d2.jpg"] },
+  { title: "עבודה 07", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w07.jpg", crop: "images/crop/w07.jpg", ratio: 1.444, colors: ["#464548", "#28262b", "#232126", "#2f2e32", "#696768"], fam: ["black"], details: ["images/w07-d1.jpg"] },
+  { title: "עבודה 08", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w08.jpg", crop: "images/crop/w08.jpg", ratio: 1.455, colors: ["#148f92", "#43a09c", "#7da691", "#a0c2c3", "#ced1d4"], fam: ["blue", "green"], details: ["images/w08-d1.jpg"] },
+  { title: "עבודה 09", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w09.jpg", crop: "images/crop/w09.jpg", ratio: 1.469, colors: ["#d2aaa2", "#d9d7db", "#a37168", "#cbc7c7", "#d7cccd"], fam: ["red", "light"], details: ["images/w09-d1.jpg"] },
+  { title: "עבודה 10", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w10.jpg", crop: "images/crop/w10.jpg", ratio: 1.442, colors: ["#8ab5c4", "#6c8690", "#c8c9cb", "#d4d2d8", "#cfcdd0"], fam: ["blue", "light"], details: ["images/w10-d1.jpg"] },
+  { title: "עבודה 11", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w11.jpg", crop: "images/crop/w11.jpg", ratio: 1.44, colors: ["#824a52", "#c9afb8", "#cfbcc4", "#b1878f", "#bf9da5"], fam: ["red", "pink"], details: ["images/w11-d1.jpg"] },
+  { title: "עבודה 12", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w12.jpg", crop: "images/crop/w12.jpg", ratio: 1.467, colors: ["#785561", "#ae7f88", "#a6979d", "#727c83", "#b1aab0"], fam: ["pink", "red", "light"], details: ["images/w12-d1.jpg"] },
+  { title: "עבודה 13", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w13.jpg", crop: "images/crop/w13.jpg", ratio: 1.426, colors: ["#c09d94", "#6d4f4c", "#8a1624", "#dad4d4", "#d3c3b7"], fam: ["red"], details: ["images/w13-d1.jpg", "images/w13-d2.jpg"] },
+  { title: "עבודה 14", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w14.jpg", crop: "images/crop/w14.jpg", ratio: 1.436, colors: ["#b9454a", "#684655", "#3381a4", "#ad848c", "#1c98bc"], fam: ["red", "pink", "blue"], details: ["images/w14-d1.jpg"] },
+  { title: "עבודה 15", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w15.jpg", crop: "images/crop/w15.jpg", ratio: 1.418, colors: ["#273e44", "#454b44", "#6f766a", "#9ea296", "#7f4f39"], fam: ["blue", "black", "light"], details: ["images/w15-d1.jpg"] },
+  { title: "עבודה 16", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w16.jpg", crop: "images/crop/w16.jpg", ratio: 1.436, colors: ["#714f36", "#c48349", "#c36f3d", "#b45d38", "#cc9c5f"], fam: ["orange"], details: ["images/w16-d1.jpg", "images/w16-d2.jpg"] },
+  { title: "עבודה 17", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w17.jpg", crop: "images/crop/w17.jpg", ratio: 0.697, colors: ["#562f31", "#4b2c2e", "#8b4132", "#6a3f35", "#a14e30"], fam: ["red"], details: ["images/w17-d1.jpg"] },
+  { title: "עבודה 18", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w18.jpg", crop: "images/crop/w18.jpg", ratio: 1.33, colors: ["#e2953a", "#a79565", "#d9cdbb", "#dbb482", "#c8bda7"], fam: ["orange", "yellow"], details: ["images/w18-d1.jpg"] },
+  { title: "עבודה 19", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w19.jpg", crop: "images/crop/w19.jpg", ratio: 1.028, colors: ["#675c29", "#413d26", "#847631", "#746c40", "#948842"], fam: ["yellow"], details: ["images/w19-d1.jpg"] },
+  { title: "עבודה 20", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w20.jpg", crop: "images/crop/w20.jpg", ratio: 1.0, colors: ["#715e4a", "#36342f", "#a58878", "#787669", "#a37b64"], fam: ["orange", "black"], details: ["images/w20-d1.jpg", "images/w20-d2.jpg"] },
+  { title: "עבודה 21", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w21.jpg", crop: "images/crop/w21.jpg", ratio: 1.448, colors: ["#c6bdb0", "#b09f85", "#cbc3ba", "#b8b2a7", "#c5b49b"], fam: ["orange", "light"], details: ["images/w21-d1.jpg"] },
+  { title: "עבודה 22", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w22.jpg", crop: "images/crop/w22.jpg", ratio: 1.455, colors: ["#8e9087", "#708c90", "#a6a290", "#a29b88", "#9d907e"], fam: ["light"], details: ["images/w22-d1.jpg"] },
+  { title: "עבודה 23", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w23.jpg", crop: "images/crop/w23.jpg", ratio: 1.513, colors: ["#46383b", "#4e3f42", "#793f3c", "#6e3936", "#905955"], fam: ["black", "red"], details: ["images/w23-d1.jpg"] },
+  { title: "עבודה 24", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w24.jpg", crop: "images/crop/w24.jpg", ratio: 1.51, colors: ["#cbcaca", "#c7af7a", "#97715f", "#c2c1ac", "#a8ac99"], fam: ["light", "orange"], details: ["images/w24-d1.jpg"] },
+  { title: "עבודה 25", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w25.jpg", crop: "images/crop/w25.jpg", ratio: 1.519, colors: ["#544646", "#c6a8a0", "#955c4e", "#bf816b", "#897e74"], fam: ["black", "red"], details: ["images/w25-d1.jpg"] },
+  { title: "עבודה 26", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w26.jpg", crop: "images/crop/w26.jpg", ratio: 2.147, colors: ["#b45d2b", "#ad3127", "#aa5329", "#b3472a", "#a8452c"], fam: ["orange", "red"], details: [] },
+  { title: "עבודה 27", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w27.jpg", crop: "images/crop/w27.jpg", ratio: 1.391, colors: ["#d58e83", "#724e54", "#cd887f", "#9b6e6d", "#ba7973"], fam: ["red"], details: ["images/w27-d1.jpg", "images/w27-d2.jpg"] },
+  { title: "עבודה 28", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w28.jpg", crop: "images/crop/w28.jpg", ratio: 1.397, colors: ["#728995", "#74767e", "#517384", "#545364", "#989386"], fam: ["light", "blue"], details: ["images/w28-d1.jpg", "images/w28-d2.jpg"] },
+  { title: "עבודה 29", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w29.jpg", crop: "images/crop/w29.jpg", ratio: 1.412, colors: ["#b26430", "#894747", "#4e3336", "#972931", "#bd7c32"], fam: ["orange", "red"], details: ["images/w29-d1.jpg", "images/w29-d2.jpg"] },
+  { title: "עבודה 30", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w30.jpg", crop: "images/crop/w30.jpg", ratio: 1.397, colors: ["#26745a", "#694a23", "#28554c", "#96531c", "#41664c"], fam: ["green", "red"], details: ["images/w30-d1.jpg"] },
+  { title: "עבודה 31", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w31.jpg", crop: "images/crop/w31.jpg", ratio: 1.42, colors: ["#a3212a", "#74262d", "#98a3ac", "#583943", "#6f7b8a"], fam: ["red", "light"], details: ["images/w31-d1.jpg", "images/w31-d2.jpg"] },
+  { title: "עבודה 32", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w32.jpg", crop: "images/crop/w32.jpg", ratio: 1.41, colors: ["#2d3948", "#2b5876", "#32485f", "#266688", "#294861"], fam: ["blue"], details: ["images/w32-d1.jpg"] },
+  { title: "עבודה 33", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w33.jpg", crop: "images/crop/w33.jpg", ratio: 1.42, colors: ["#b8b379", "#74795f", "#c8c07f", "#cdc37a", "#d2c77c"], fam: ["yellow", "light"], details: ["images/w33-d1.jpg"] },
+  { title: "עבודה 34", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w34.jpg", crop: "images/crop/w34.jpg", ratio: 1.42, colors: ["#956b58", "#aa886a", "#686963", "#704a46", "#8f806c"], fam: ["orange", "light"], details: ["images/w34-d1.jpg", "images/w34-d2.jpg"] },
+  { title: "עבודה 35", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w35.jpg", crop: "images/crop/w35.jpg", ratio: 1.412, colors: ["#872228", "#8b5e65", "#532124", "#8a101c", "#793c47"], fam: ["red"], details: ["images/w35-d1.jpg"] },
+  { title: "עבודה 36", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w36.jpg", crop: "images/crop/w36.jpg", ratio: 1.395, colors: ["#923337", "#394452", "#52525e", "#593438", "#7d6883"], fam: ["red", "blue", "black"], details: ["images/w36-d1.jpg", "images/w36-d2.jpg", "images/w36-d3.jpg"] },
+  { title: "עבודה 37", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w37.jpg", crop: "images/crop/w37.jpg", ratio: 1.397, colors: ["#78534f", "#9c5b4d", "#9b6352", "#b07556", "#98534c"], fam: ["red"], details: ["images/w37-d1.jpg", "images/w37-d2.jpg"] },
+  { title: "עבודה 38", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w38.jpg", crop: "images/crop/w38.jpg", ratio: 1.412, colors: ["#841c28", "#bf8888", "#cfb1b0", "#a35357", "#873138"], fam: ["red"], details: ["images/w38-d1.jpg", "images/w38-d2.jpg", "images/w38-d3.jpg", "images/w38-d4.jpg"] },
 ];
 
 const STYLES = { abstract: "אבסטרקט", surreal: "סוריאליזם", expressionism: "אקספרסיוניזם" };
+const FAMS = { red: ["אדום", "#c8312a"], orange: ["כתום", "#e8892f"], yellow: ["צהוב", "#e9c84a"], green: ["ירוק", "#4f8a4b"],
+               blue: ["כחול", "#2f6db5"], pink: ["ורוד וסגול", "#c27ba0"], black: ["שחור ואפור", "#2a2725"], light: ["בהיר", "#ece6da"] };
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
+const $ = id => document.getElementById(id);
 const thumb = src => src.replace("images/", "images/thumbs/");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const priceText = p => p.sold ? "נמכר" : (p.price ? "₪" + p.price.toLocaleString("he-IL") : "מחיר לפי פנייה");
 const subText = p => [STYLES[p.style], p.size].filter(Boolean).join(" · ");
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 2400); }
+
+let lbIndex = null, tab = "photo";
+const filter = { style: "all", fam: null };
+
+/* ---------- favourites ---------- */
+const favs = new Set(store.get("favs", []).filter(i => PAINTINGS[i]));
+function toggleFav(i) {
+  favs.has(i) ? favs.delete(i) : favs.add(i);
+  store.set("favs", [...favs]);
+  toast(favs.has(i) ? "נוסף למועדפים" : "הוסר מהמועדפים");
+  syncFavs();
+}
+function syncFavs() {
+  const c = $("favCount"); c.textContent = favs.size; c.hidden = !favs.size;
+  document.querySelectorAll(".fav").forEach(b => b.setAttribute("aria-pressed", favs.has(+b.dataset.i)));
+  if (lbIndex != null) $("lbFav").textContent = favs.has(lbIndex) ? "הסרה מהמועדפים" : "הוספה למועדפים";
+  const favChip = document.querySelector('[data-style="fav"]');
+  if (favChip) favChip.textContent = `המועדפים שלי (${favs.size})`;
+  fillSelect();
+  if (filter.style === "fav") renderGrid();
+}
 
 /* ---------- gallery ---------- */
-const grid = document.getElementById("grid");
-let filter = "all";
+const grid = $("grid");
+const heart = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.1 1.7-1.9 3.2-3.1 5.3-3.1 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>`;
+function visible() {
+  return PAINTINGS.map((p, i) => i).filter(i => {
+    const p = PAINTINGS[i];
+    if (filter.style === "fav" && !favs.has(i)) return false;
+    if (filter.style !== "all" && filter.style !== "fav" && p.style !== filter.style) return false;
+    if (filter.fam && !p.fam.includes(filter.fam)) return false;
+    return true;
+  });
+}
 function renderGrid() {
+  const list = visible();
   grid.innerHTML = "";
-  PAINTINGS.forEach((p, i) => {
-    if (filter !== "all" && p.style !== filter) return;
-    const b = document.createElement("button");
-    b.className = "card"; b.type = "button";
-    b.innerHTML = `
-      <div class="pic"><img src="${thumb(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async">
-        ${p.sold ? '<span class="badge sold">נמכר</span>' : ''}
-      </div>
-      <div class="meta">
-        <div><h3>${esc(p.title)}</h3><div class="sub">${esc(subText(p))}</div></div>
-        <div class="price">${priceText(p)}</div>
-      </div>`;
-    b.addEventListener("click", () => openLB(i));
-    grid.appendChild(b);
-  });
-}
-const filters = document.getElementById("filters");
-[["all","הכל"], ...Object.entries(STYLES)].forEach(([k, v]) => {
-  const c = document.createElement("button");
-  c.className = "chip"; c.type = "button"; c.textContent = v;
-  c.setAttribute("aria-pressed", k === filter);
-  c.onclick = () => { filter = k; [...filters.children].forEach(x => x.setAttribute("aria-pressed", x === c)); renderGrid(); };
-  filters.appendChild(c);
-});
-renderGrid();
-
-/* hero: two close-up details */
-document.getElementById("heroA").innerHTML = `<img src="images/w31-d2.jpg" alt="">`;
-document.getElementById("heroB").innerHTML = `<img src="images/w01-d2.jpg" alt="">`;
-document.getElementById("countWorks").textContent = PAINTINGS.filter(p => !p.sold).length;
-
-/* ---------- lightbox ---------- */
-const lb = document.getElementById("lb");
-function openLB(i) {
-  const p = PAINTINGS[i], shots = [p.image, ...(p.details || [])];
-  const main = document.getElementById("lbImg");
-  const show = src => { main.innerHTML = `<img src="${src}" alt="${esc(p.title)}">`; };
-  show(p.image);
-  const strip = document.getElementById("lbShots");
-  strip.innerHTML = "";
-  if (shots.length > 1) shots.forEach((s, k) => {
-    const t = document.createElement("button");
-    t.type = "button"; t.setAttribute("aria-label", k ? `תקריב ${k}` : "הציור המלא");
-    t.setAttribute("aria-pressed", k === 0);
-    t.innerHTML = `<img src="${k ? s : thumb(s)}" alt="" loading="lazy">`;
-    t.onclick = () => { show(s); [...strip.children].forEach(x => x.setAttribute("aria-pressed", x === t)); };
-    strip.appendChild(t);
-  });
-  document.getElementById("lbStyle").textContent = STYLES[p.style] || "";
-  document.getElementById("lbTitle").textContent = p.title;
-  document.getElementById("lbMeta").innerHTML = [["שנה", p.year], ["מידות", p.size], ["טכניקה", p.medium]]
-    .filter(([, v]) => v).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
-  document.getElementById("lbPrice").textContent = priceText(p);
-  const buy = document.getElementById("lbBuy");
-  buy.style.display = p.sold ? "none" : "";
-  buy.onclick = () => { document.getElementById("workSelect").value = String(i); lb.close(); };
-  lb.showModal();
-}
-document.getElementById("lbClose").onclick = () => lb.close();
-lb.addEventListener("click", e => { if (e.target === lb) lb.close(); });
-
-/* ---------- inquiry form ---------- */
-const sel = document.getElementById("workSelect");
-sel.innerHTML = `<option value="">ציור בהזמנה אישית / שאלה כללית</option>` +
-  PAINTINGS.map((p, i) => p.sold ? "" : `<option value="${i}">${p.title}${p.size ? ` (${p.size})` : ""}</option>`).join("");
-
-const direct = document.getElementById("direct");
-if (CONFIG.whatsapp) direct.innerHTML += `<div>וואטסאפ: <a href="https://wa.me/${CONFIG.whatsapp}" dir="ltr">+${CONFIG.whatsapp}</a></div>`;
-if (CONFIG.email) direct.innerHTML += `<div>מייל: <a href="mailto:${CONFIG.email}">${CONFIG.email}</a></div>`;
-if (CONFIG.instagram) direct.innerHTML += `<div>אינסטגרם: <a href="https://instagram.com/${CONFIG.instagram}" dir="ltr">@${CONFIG.instagram}</a></div>`;
-
-const form = document.getElementById("inquiry"), note = document.getElementById("formNote");
-form.addEventListener("submit", e => {
-  e.preventDefault();
-  const via = e.submitter?.dataset.via || "email";
-  const f = new FormData(form);
-  if (!f.get("name").trim() || !f.get("reach").trim()) { note.textContent = "צריך למלא שם ודרך ליצור קשר."; return; }
-  const w = f.get("work") !== "" ? PAINTINGS[+f.get("work")] : null;
-  const text = `שלום טל, אני ${f.get("name")}.\n` +
-    (w ? `מתעניין/ת בציור "${w.title}"${w.size ? ` (${w.size})` : ""}.\n` : `אשמח לשמוע על ציור בהזמנה / שאלה כללית.\n`) +
-    (f.get("msg").trim() ? f.get("msg").trim() + "\n" : "") +
-    `ליצירת קשר: ${f.get("reach")}`;
-  if (via === "whatsapp" && CONFIG.whatsapp) {
-    window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
-  } else if (via === "email" && CONFIG.email) {
-    location.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent("פנייה מהאתר" + (w ? ": " + w.title : ""))}&body=${encodeURIComponent(text)}`;
-  } else {
-    note.textContent = "פרטי הקשר של האמן עוד לא הוגדרו באתר. נסו שוב בקרוב.";
+  $("showing").textContent = `מוצגות ${list.length} מתוך ${PAINTINGS.length} עבודות`;
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty">${filter.style === "fav" ? "עוד לא סימנת ציורים. לחיצה על הלב שעל ציור שומרת אותו כאן." : "אין ציורים שמתאימים לסינון הזה. נסו צבע או סגנון אחר."}</div>`;
     return;
   }
+  list.forEach(i => {
+    const p = PAINTINGS[i];
+    const el = document.createElement("article");
+    el.className = "card";
+    el.innerHTML = `
+      <button class="fav" type="button" data-i="${i}" aria-pressed="${favs.has(i)}" aria-label="סימון ${esc(p.title)} כמועדף">${heart}</button>
+      <button class="open" type="button" aria-label="פתיחת ${esc(p.title)}">
+        <div class="pic"><img src="${thumb(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async">
+          ${p.sold ? '<span class="badge">נמכר</span>' : ''}
+        </div>
+        <div class="meta">
+          <div><h3>${esc(p.title)}</h3><div class="sub">${esc(subText(p))}</div></div>
+          <div class="price">${priceText(p)}</div>
+        </div>
+        <div class="dots">${p.colors.slice(0, 5).map(c => `<i style="background:${c}"></i>`).join("")}</div>
+      </button>`;
+    el.querySelector(".open").addEventListener("click", () => openLB(i));
+    el.querySelector(".fav").addEventListener("click", () => toggleFav(i));
+    if (finePointer && !reduceMotion) {
+      const pic = el.querySelector(".pic");
+      pic.addEventListener("pointermove", e => {
+        const r = pic.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        pic.style.transform = `perspective(900px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg) scale(1.02)`;
+        pic.style.setProperty("--gx", (x + .5) * 100 + "%"); pic.style.setProperty("--gy", (y + .5) * 100 + "%");
+      });
+      pic.addEventListener("pointerleave", () => { pic.style.transform = ""; });
+    }
+    grid.appendChild(el);
+  });
+}
+const styleRow = $("styleRow");
+[["all", "הכל"], ...Object.entries(STYLES), ["fav", "המועדפים שלי (0)"]].forEach(([k, v]) => {
+  const c = document.createElement("button");
+  c.className = "chip"; c.type = "button"; c.textContent = v; c.dataset.style = k;
+  c.setAttribute("aria-pressed", k === filter.style);
+  c.onclick = () => setStyle(k);
+  styleRow.appendChild(c);
+});
+function setStyle(k) {
+  filter.style = k;
+  styleRow.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x.dataset.style === k));
+  renderGrid();
+}
+const colorRow = $("colorRow");
+Object.entries(FAMS).forEach(([k, [name, hex]]) => {
+  if (!PAINTINGS.some(p => p.fam.includes(k))) return;
+  const s = document.createElement("button");
+  s.className = "swatch"; s.type = "button"; s.style.background = hex; s.title = name; s.dataset.fam = k;
+  s.setAttribute("aria-label", "ציורים עם " + name); s.setAttribute("aria-pressed", "false");
+  s.onclick = () => {
+    filter.fam = filter.fam === k ? null : k;
+    colorRow.querySelectorAll(".swatch").forEach(x => x.setAttribute("aria-pressed", x.dataset.fam === filter.fam));
+    renderGrid();
+  };
+  colorRow.appendChild(s);
+});
+$("favBtn").onclick = () => { setStyle("fav"); $("works").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); };
+$("surprise").onclick = () => { const l = visible(), pool = l.length ? l : PAINTINGS.map((_, i) => i); openLB(pool[Math.floor(Math.random() * pool.length)]); };
+$("countWorks").textContent = PAINTINGS.filter(p => !p.sold).length;
+
+/* ---------- three.js loader (only when a 3D view is needed) ---------- */
+let threeP;
+function loadThree() {
+  if (window.THREE) return Promise.resolve();
+  return threeP ||= new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+    s.onload = res; s.onerror = () => { threeP = null; rej(new Error("three")); };
+    document.head.appendChild(s);
+  });
+}
+function webglOK() { try { const c = document.createElement("canvas"); return !!(c.getContext("webgl") || c.getContext("experimental-webgl")); } catch { return false; } }
+function canvasTex(w, h, draw) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h);
+  const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; return t;
+}
+
+/* ============================================================
+   3D ROOM
+   ============================================================ */
+const Room = (() => {
+  const stage = $("roomStage"), canvas = $("roomCanvas"), msg = $("roomMsg"), tip = $("roomTip");
+  let renderer, scene, camera, ray, items = [], running = false, initP = null, last = 0;
+  const R = 8, EYE = 2.2;
+  const st = { yaw: 0, pitch: 0, fov: 60, tYaw: 0, tPitch: 0, tFov: 60, focus: -1, idle: 0, tour: null };
+  const baseFov = () => (stage.clientWidth / stage.clientHeight < 1 ? 74 : 58);
+
+  function init() { return initP ||= build().catch(() => { initP = null; msg.textContent = "לא הצלחנו לטעון את חדר התצוגה. אפשר לראות את כל הציורים בגלריה למטה."; }); }
+  async function build() {
+    if (!webglOK()) { msg.textContent = "הדפדפן הזה לא תומך בתלת־ממד. אפשר לראות את כל הציורים בגלריה למטה."; return; }
+    await loadThree();
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1612);
+    camera = new THREE.PerspectiveCamera(60, 1, 0.1, 60);
+    camera.position.set(0, EYE, 0); camera.rotation.order = "YXZ";
+    ray = new THREE.Raycaster();
+    st.fov = st.tFov = baseFov();
+
+    // plaster wall
+    const plaster = canvasTex(256, 256, (g, w, h) => {
+      g.fillStyle = "#d9d1c3"; g.fillRect(0, 0, w, h);
+      for (let k = 0; k < 2600; k++) { g.fillStyle = `rgba(${Math.random() < .5 ? "255,255,255" : "120,100,80"},${Math.random() * .06})`; g.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+    });
+    plaster.wrapS = plaster.wrapT = THREE.RepeatWrapping; plaster.repeat.set(12, 2);
+    const wall = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 6.4, 120, 1, true), new THREE.MeshLambertMaterial({ map: plaster, side: THREE.BackSide }));
+    wall.position.y = 3.2; scene.add(wall);
+    const skirt = new THREE.Mesh(new THREE.CylinderGeometry(R - .02, R - .02, .16, 120, 1, true), new THREE.MeshLambertMaterial({ color: 0x2b241e, side: THREE.BackSide }));
+    skirt.position.y = .08; scene.add(skirt);
+    // oak floor
+    const planks = canvasTex(1024, 1024, (g, w, h) => {
+      const rows = 16, rh = h / rows;
+      for (let r = 0; r < rows; r++) {
+        let x = -Math.random() * 300;
+        while (x < w) {
+          const len = 220 + Math.random() * 320, tone = 112 + Math.random() * 34;
+          g.fillStyle = `rgb(${tone + 30},${tone * .78 + 8},${tone * .52})`; g.fillRect(x, r * rh, len, rh);
+          for (let k = 0; k < 7; k++) { g.strokeStyle = `rgba(60,38,20,${.05 + Math.random() * .08})`; g.beginPath(); const yy = r * rh + Math.random() * rh; g.moveTo(x, yy); g.bezierCurveTo(x + len * .3, yy + 4, x + len * .6, yy - 4, x + len, yy); g.stroke(); }
+          g.fillStyle = "rgba(40,25,14,.55)"; g.fillRect(x, r * rh, 2, rh); x += len;
+        }
+        g.fillStyle = "rgba(40,25,14,.5)"; g.fillRect(0, r * rh, w, 2);
+      }
+    });
+    planks.wrapS = planks.wrapT = THREE.RepeatWrapping; planks.repeat.set(3, 3);
+    planks.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(R, 120), new THREE.MeshLambertMaterial({ map: planks }));
+    floor.rotation.x = -Math.PI / 2; scene.add(floor);
+    // bench
+    const benchMat = new THREE.MeshLambertMaterial({ color: 0x3a2e25 });
+    const seat = new THREE.Mesh(new THREE.BoxGeometry(2.4, .12, .7), benchMat); seat.position.set(0, .46, 2.6); scene.add(seat);
+    [-1, 1].forEach(s => { const leg = new THREE.Mesh(new THREE.BoxGeometry(.1, .42, .6), benchMat); leg.position.set(s * 1.05, .21, 2.6); scene.add(leg); });
+    // ceiling + light ring
+    const ceil = new THREE.Mesh(new THREE.CircleGeometry(R, 120), new THREE.MeshBasicMaterial({ color: 0x221d18 }));
+    ceil.rotation.x = Math.PI / 2; ceil.position.y = 6.4; scene.add(ceil);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(R * .62, .05, 8, 160), new THREE.MeshBasicMaterial({ color: 0xfff1d6 }));
+    ring.rotation.x = Math.PI / 2; ring.position.y = 6.3; scene.add(ring);
+    scene.add(new THREE.AmbientLight(0xffffff, .34));
+    scene.add(new THREE.HemisphereLight(0xfff4e2, 0x3b2c20, .42));
+    const pl = new THREE.PointLight(0xfff0d8, .55, 30); pl.position.set(0, 5.6, 0); scene.add(pl);
+
+    const glow = canvasTex(256, 256, (g, w, h) => {
+      const gr = g.createRadialGradient(w / 2, h * .42, 0, w / 2, h / 2, w / 2);
+      gr.addColorStop(0, "rgba(255,244,222,.75)"); gr.addColorStop(.55, "rgba(255,240,215,.22)"); gr.addColorStop(1, "rgba(255,240,215,0)");
+      g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    });
+    const glowMat = new THREE.MeshBasicMaterial({ map: glow, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: .2 });
+    const frameMat = new THREE.MeshLambertMaterial({ color: 0x1b1815 });
+    const loader = new THREE.TextureLoader();
+    const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    await document.fonts.ready;
+
+    // hang the paintings: two rows around the round room
+    const ids = PAINTINGS.map((_, i) => i), half = Math.ceil(ids.length / 2);
+    const rows = [{ ids: ids.slice(0, half), y: 1.55 }, { ids: ids.slice(half), y: 3.4 }];
+    const r = R - .06, circ = 2 * Math.PI * r;
+    rows.forEach((row, ri) => {
+      const dims = row.ids.map(i => { const a = PAINTINGS[i].ratio; let h = 1.3, w = a * h; if (w > 2.2) { w = 2.2; h = w / a; } if (h > 1.45) { h = 1.45; w = h * a; } return { i, w, h }; });
+      const gap = (circ - dims.reduce((s, d) => s + d.w, 0)) / dims.length;
+      let cum = ri ? gap / 2 + .7 : 0;
+      dims.forEach(d => {
+        const th = (cum + d.w / 2) / r; cum += d.w + gap;
+        const p = PAINTINGS[d.i];
+        const grp = new THREE.Group();
+        grp.position.set(Math.sin(th) * r, row.y, -Math.cos(th) * r);
+        grp.lookAt(0, row.y, 0);
+        const gl = new THREE.Mesh(new THREE.PlaneGeometry(d.w * 1.7 + .5, d.h * 1.9 + .4), glowMat); gl.position.set(0, .25, -.045); grp.add(gl);
+        const fr = new THREE.Mesh(new THREE.BoxGeometry(d.w + .1, d.h + .1, .06), frameMat); fr.position.z = -.01; grp.add(fr);
+        const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(p.colors[0]) });
+        const art = new THREE.Mesh(new THREE.PlaneGeometry(d.w, d.h), mat); art.position.z = .022; art.userData.i = d.i; grp.add(art);
+        loader.load(p.crop, t => { t.encoding = THREE.sRGBEncoding; t.anisotropy = aniso; mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; });
+        const plaque = new THREE.Mesh(new THREE.PlaneGeometry(.62, .16), new THREE.MeshBasicMaterial({ map: canvasTex(256, 66, (g, w, h) => {
+          g.fillStyle = "#f7f2e8"; g.fillRect(0, 0, w, h); g.fillStyle = "#1c1a17"; g.direction = "rtl"; g.textAlign = "center";
+          g.font = "500 30px 'Frank Ruhl Libre', serif"; g.fillText(p.title, w / 2, 32);
+          g.font = "400 19px Assistant, sans-serif"; g.fillStyle = "#6b655c"; g.fillText(STYLES[p.style] || "", w / 2, 56);
+        }) }));
+        plaque.position.set(d.w / 2 - .31, -d.h / 2 - .2, .01); grp.add(plaque);
+        scene.add(grp);
+        items.push({ i: d.i, mesh: art, th, y: row.y, w: d.w, h: d.h });
+      });
+    });
+    items.sort((a, b) => a.i - b.i);
+    msg.hidden = true;
+    resize(); new ResizeObserver(resize).observe(stage);
+    bind();
+    new IntersectionObserver(es => { const was = running; running = es[0].isIntersecting; if (running && !was) { last = performance.now(); requestAnimationFrame(loop); } }, { threshold: .02 }).observe(stage);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden && running) { last = performance.now(); requestAnimationFrame(loop); } });
+  }
+
+  function resize() {
+    if (!renderer) return;
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h;
+    if (st.focus < 0) st.tFov = baseFov(); else focus(st.focus);
+    camera.updateProjectionMatrix();
+    if (!running) renderer.render(scene, camera);
+  }
+  const wrapAng = a => Math.atan2(Math.sin(a), Math.cos(a));
+  let looping = false;
+  function loop(now) {
+    if (!running || document.hidden) { looping = false; return; }
+    const dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now;
+    st.idle += dt;
+    if (st.focus < 0 && !dragging && st.idle > 3 && !reduceMotion) st.tYaw -= dt * .05;
+    const k = 1 - Math.pow(.004, dt);
+    st.yaw += wrapAng(st.tYaw - st.yaw) * k; st.pitch += (st.tPitch - st.pitch) * k; st.fov += (st.tFov - st.fov) * k;
+    camera.rotation.y = st.yaw; camera.rotation.x = st.pitch;
+    if (Math.abs(camera.fov - st.fov) > .01) { camera.fov = st.fov; camera.updateProjectionMatrix(); }
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  }
+
+  function pick(e) {
+    const r = canvas.getBoundingClientRect();
+    ray.setFromCamera({ x: ((e.clientX - r.left) / r.width) * 2 - 1, y: -((e.clientY - r.top) / r.height) * 2 + 1 }, camera);
+    const hit = ray.intersectObjects(items.map(t => t.mesh))[0];
+    return hit ? hit.object.userData.i : -1;
+  }
+  function focus(i) {
+    const it = items[i]; if (!it) return;
+    st.focus = i; st.idle = 0;
+    st.tYaw = st.yaw + wrapAng(-it.th - st.yaw);
+    st.tPitch = Math.atan2(it.y - EYE, R - .5);
+    const aspect = camera.aspect, vH = 2 * Math.atan((it.h * 1.7) / 2 / R), hW = 2 * Math.atan((it.w * 1.35) / 2 / R);
+    st.tFov = Math.max(vH, 2 * Math.atan(Math.tan(hW / 2) / aspect)) * 180 / Math.PI;
+    const p = PAINTINGS[i];
+    $("rfTitle").textContent = p.title; $("rfStyle").textContent = [STYLES[p.style], priceText(p)].join(" · ");
+    $("roomFocus").hidden = false; $("roomHint").style.opacity = 0;
+  }
+  function unfocus() { st.focus = -1; st.tPitch = 0; st.tFov = baseFov(); $("roomFocus").hidden = true; stopTour(); }
+  function step(d) { focus((Math.max(st.focus, 0) + d + PAINTINGS.length) % PAINTINGS.length); }
+  function stopTour() { clearInterval(st.tour); st.tour = null; $("roomTour").setAttribute("aria-pressed", "false"); }
+
+  let dragging = false, sx = 0, sy = 0, moved = 0, lastHover = 0;
+  function bind() {
+    canvas.addEventListener("pointerdown", e => {
+      dragging = true; moved = 0; sx = e.clientX; sy = e.clientY; st.idle = 0;
+      canvas.setPointerCapture(e.pointerId); canvas.classList.add("dragging");
+    });
+    canvas.addEventListener("pointermove", e => {
+      if (dragging) {
+        const dx = e.clientX - sx, dy = e.clientY - sy; sx = e.clientX; sy = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
+        const s = .0042 * (st.fov / 60);
+        st.yaw += dx * s; st.tYaw = st.yaw;
+        if (e.pointerType === "mouse") { st.pitch = Math.max(-.45, Math.min(.5, st.pitch + dy * s)); st.tPitch = st.pitch; }
+        if (moved > 8) { $("roomHint").style.opacity = 0; if (st.tour) stopTour(); }
+        tip.hidden = true; return;
+      }
+      if (e.pointerType !== "mouse" || performance.now() - lastHover < 60) return;
+      lastHover = performance.now();
+      const i = pick(e); canvas.classList.toggle("hovering", i >= 0);
+      if (i >= 0) {
+        const r = stage.getBoundingClientRect();
+        tip.textContent = PAINTINGS[i].title + (st.focus === i ? " · לחצו לפרטים" : " · לחצו להתקרבות");
+        tip.style.right = (r.right - e.clientX) + "px"; tip.style.top = (e.clientY - r.top) + "px"; tip.hidden = false;
+      } else tip.hidden = true;
+    });
+    const end = e => {
+      if (!dragging) return; dragging = false; canvas.classList.remove("dragging");
+      if (moved < 8) { const i = pick(e); if (i >= 0) { if (st.focus === i) openLB(i); else { stopTour(); focus(i); } } else if (st.focus >= 0) unfocus(); }
+    };
+    canvas.addEventListener("pointerup", end);
+    canvas.addEventListener("pointercancel", () => { dragging = false; canvas.classList.remove("dragging"); });
+    canvas.addEventListener("pointerleave", () => { tip.hidden = true; });
+    $("rfPrev").onclick = () => { stopTour(); step(-1); };
+    $("rfNext").onclick = () => { stopTour(); step(1); };
+    $("rfOpen").onclick = () => openLB(st.focus);
+    $("rfClose").onclick = unfocus;
+    $("roomIn").onclick = () => { st.tFov = Math.max(16, st.tFov * .8); st.idle = 0; };
+    $("roomOut").onclick = () => { st.tFov = Math.min(80, st.tFov * 1.25); st.idle = 0; };
+    $("roomTour").onclick = () => {
+      if (st.tour) { stopTour(); return; }
+      $("roomTour").setAttribute("aria-pressed", "true");
+      step(st.focus < 0 ? 0 : 1);
+      st.tour = setInterval(() => step(1), 3800);
+    };
+    $("roomFull").onclick = async () => {
+      try { if (document.fullscreenElement) await document.exitFullscreen(); else await stage.requestFullscreen(); }
+      catch { toast("מסך מלא לא זמין בדפדפן הזה"); }
+    };
+    stage.addEventListener("keydown", e => {
+      if (e.key === "ArrowLeft") { stopTour(); step(1); } else if (e.key === "ArrowRight") { stopTour(); step(-1); } else if (e.key === "Escape") unfocus();
+    });
+  }
+  return { init, focusOn: async i => { await init(); focus(i); }, state: st };
+})();
+new IntersectionObserver((es, ob) => { if (es[0].isIntersecting) { Room.init(); ob.disconnect(); } }, { rootMargin: "500px" }).observe($("roomStage"));
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+const lb = $("lb");
+function openLB(i) {
+  lbIndex = i;
+  const p = PAINTINGS[i], shots = [p.image, ...(p.details || [])];
+  const showPhoto = src => { $("lbPhoto").innerHTML = `<img src="${src}" alt="${esc(p.title)}">`; };
+  showPhoto(p.image);
+  const strip = $("lbShots"); strip.innerHTML = "";
+  if (shots.length > 1) shots.forEach((s, k) => {
+    const t = document.createElement("button");
+    t.type = "button"; t.setAttribute("aria-label", k ? `תקריב ${k}` : "הציור המלא"); t.setAttribute("aria-pressed", k === 0);
+    t.innerHTML = `<img src="${k ? s : thumb(s)}" alt="" loading="lazy">`;
+    t.onclick = () => { setTab("photo"); showPhoto(s); strip.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === t)); };
+    strip.appendChild(t);
+  });
+  $("lbStyle").textContent = STYLES[p.style] || "";
+  $("lbTitle").textContent = p.title;
+  $("lbMeta").innerHTML = [["שנה", p.year], ["מידות", p.size], ["טכניקה", p.medium]]
+    .filter(([, v]) => v).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
+  $("lbPalette").innerHTML = p.colors.map(c => `<i style="background:${c}" title="${c}"></i>`).join("");
+  $("lbPrice").textContent = priceText(p);
+  $("lbBuy").style.display = p.sold ? "none" : "";
+  $("lbPos").textContent = `${i + 1} / ${PAINTINGS.length}`;
+  syncFavs();
+  setWall();
+  if (!lb.open) lb.showModal();
+  setTab(tab);
+  try { history.replaceState(null, "", "#w" + (i + 1)); } catch {}
+}
+function closeLB() { if (lb.open) lb.close(); }
+lb.addEventListener("close", () => { View3D.stop(); lbIndex = null; try { history.replaceState(null, "", location.pathname + location.search); } catch {} });
+function navLB(d) { if (lbIndex != null) openLB((lbIndex + d + PAINTINGS.length) % PAINTINGS.length); }
+$("lbClose").onclick = closeLB;
+lb.addEventListener("click", e => { if (e.target === lb) closeLB(); });
+$("lbPrev").onclick = () => navLB(-1);
+$("lbNext").onclick = () => navLB(1);
+$("lbFav").onclick = () => toggleFav(lbIndex);
+$("lbBuy").onclick = () => { $("workSelect").value = String(lbIndex); closeLB(); };
+$("lbShare").onclick = async () => {
+  const url = location.href.split("#")[0] + "#w" + (lbIndex + 1);
+  try { await navigator.clipboard.writeText(url); toast("הקישור הועתק"); }
+  catch { toast(url); }
+};
+lb.addEventListener("keydown", e => {
+  if (e.target.matches("input, textarea, select")) return;
+  if (e.key === "ArrowLeft") navLB(1); else if (e.key === "ArrowRight") navLB(-1);
+});
+(() => { // swipe between paintings on the photo pane
+  let x0 = null;
+  $("lbPhoto").addEventListener("pointerdown", e => { x0 = e.clientX; });
+  $("lbPhoto").addEventListener("pointerup", e => { if (x0 == null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 60) navLB(dx < 0 ? -1 : 1); });
+})();
+
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => setTab(b.dataset.tab));
+function setTab(t) {
+  tab = t;
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t));
+  $("lbPhoto").hidden = t !== "photo";
+  $("lbWall").hidden = t !== "wall";
+  $("lb3d").hidden = $("note3d").hidden = $("tools3d").hidden = t !== "three";
+  if (t === "three" && lbIndex != null) View3D.show(PAINTINGS[lbIndex]); else View3D.stop();
+}
+
+/* ---------- "on my wall" ---------- */
+const WALLS = [["#ece6da", "לבן חם"], ["#c9c6bf", "אפור"], ["#2f3e4c", "כחול לילה"], ["#6b7357", "ירוק זית"], ["#b5654a", "טרקוטה"]];
+let wallColor = store.get("wall", WALLS[0][0]);
+WALLS.forEach(([c, n]) => {
+  const b = document.createElement("button"); b.type = "button"; b.style.background = c; b.title = n; b.dataset.c = c; b.setAttribute("aria-label", "צבע קיר " + n);
+  b.onclick = () => { wallColor = c; store.set("wall", c); setWall(); };
+  $("wallColors").appendChild(b);
+});
+function setWall() {
+  if (lbIndex == null) return;
+  const p = PAINTINGS[lbIndex];
+  $("lbWall").style.setProperty("--wall", wallColor);
+  $("wallColors").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.c === wallColor));
+  const m = (p.size || "").match(/(\d+)\s*[×x*]\s*(\d+)/);
+  const wcm = m ? +m[1] : (p.ratio >= 1 ? 90 : 60);       // assumed width when the size is not filled in
+  const art = $("wallArt"); art.style.width = Math.min(70, wcm / 210 * 62) + "%";
+  art.querySelector("img").src = p.crop;
+}
+
+/* ---------- 3D canvas viewer ---------- */
+const View3D = (() => {
+  const cv = $("lb3d");
+  let renderer, scene, camera, group, light, raf = 0, cur = null, dragging = false, px = 0, py = 0, rx = 0, ry = 0, tRy = 0, idle = 0, lastT = 0;
+  async function show(p) {
+    if (!webglOK()) { $("note3d").textContent = "הדפדפן הזה לא תומך בתלת־ממד"; return; }
+    try { await loadThree(); } catch { $("note3d").textContent = "לא הצלחנו לטעון את התצוגה התלת־ממדית"; return; }
+    if (tab !== "three" || !lb.open) return;
+    if (!renderer) setup();
+    if (cur !== p) build(p);
+    size(); cancelAnimationFrame(raf); lastT = performance.now(); raf = requestAnimationFrame(loop);
+  }
+  function setup() {
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.outputEncoding = THREE.sRGBEncoding;
+    scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(32, 1, .1, 50); camera.position.set(0, 0, 5.2);
+    scene.add(new THREE.AmbientLight(0xffffff, .55));
+    light = new THREE.DirectionalLight(0xfff6e8, .95); light.position.set(2, 2, 3); scene.add(light);
+    const back = new THREE.DirectionalLight(0xffffff, .35); back.position.set(-2, -1, -3); scene.add(back);
+    cv.addEventListener("pointerdown", e => { dragging = true; px = e.clientX; py = e.clientY; idle = 0; cv.setPointerCapture(e.pointerId); });
+    cv.addEventListener("pointermove", e => {
+      const r = cv.getBoundingClientRect();
+      light.position.set(((e.clientX - r.left) / r.width - .5) * 6, -((e.clientY - r.top) / r.height - .5) * 6, 2.4);
+      if (!dragging) return;
+      tRy += (e.clientX - px) * .01; rx = Math.max(-.9, Math.min(.9, rx + (e.clientY - py) * .008)); px = e.clientX; py = e.clientY; idle = 0;
+    });
+    cv.addEventListener("pointerup", () => { dragging = false; });
+    cv.addEventListener("pointercancel", () => { dragging = false; });
+    $("flip3d").onclick = () => { tRy += Math.PI; idle = -2; };
+  }
+  function build(p) {
+    cur = p;
+    if (group) { scene.remove(group); group.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
+    group = new THREE.Group(); rx = 0; ry = tRy = -.35; idle = 0;
+    const W = p.ratio >= 1 ? 2.4 : 2.4 * p.ratio * 1.1, H = W / p.ratio, D = .07;
+    const edge = new THREE.MeshStandardMaterial({ color: new THREE.Color(p.colors[0]), roughness: .9 });
+    const linen = canvasTex(256, 256, (g, w, h) => {
+      g.fillStyle = "#d9ccb2"; g.fillRect(0, 0, w, h);
+      for (let k = 0; k < w; k += 2) { g.fillStyle = `rgba(110,90,60,${Math.random() * .12})`; g.fillRect(k, 0, 1, h); g.fillRect(0, k, w, 1); }
+    });
+    const backMat = new THREE.MeshStandardMaterial({ map: linen, roughness: 1 });
+    const front = new THREE.MeshStandardMaterial({ color: new THREE.Color(p.colors[0]), roughness: .82, metalness: 0 });
+    new THREE.TextureLoader().load(p.crop, t => { t.encoding = THREE.sRGBEncoding; front.map = t; front.bumpMap = t; front.bumpScale = .028; front.color.set(0xffffff); front.needsUpdate = true; });
+    group.add(new THREE.Mesh(new THREE.BoxGeometry(W, H, D), [edge, edge, edge, edge, front, backMat]));
+    const wood = new THREE.MeshStandardMaterial({ color: 0xb08a5a, roughness: .8 });
+    const bar = (w, h, x, y) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, .05), wood); m.position.set(x, y, -D / 2 - .025); group.add(m); };
+    bar(W - .08, .09, 0, H / 2 - .09); bar(W - .08, .09, 0, -H / 2 + .09); bar(.09, H - .08, W / 2 - .09, 0); bar(.09, H - .08, -W / 2 + .09, 0); bar(.07, H - .2, 0, 0);
+    const sig = new THREE.Mesh(new THREE.PlaneGeometry(.9, .3), new THREE.MeshBasicMaterial({ transparent: true, map: canvasTex(300, 100, (g, w, h) => {
+      g.fillStyle = "#2a2018"; g.direction = "rtl"; g.textAlign = "center"; g.font = "italic 500 44px 'Frank Ruhl Libre', serif"; g.fillText("טל לוי", w / 2, 50);
+      g.font = "400 24px Assistant, sans-serif"; g.fillText(p.title, w / 2, 86);
+    }) }));
+    sig.position.set(W * .22, -H * .25, -D / 2 - .052); sig.rotation.y = Math.PI; group.add(sig);
+    scene.add(group);
+  }
+  function size() {
+    const r = cv.parentElement.getBoundingClientRect(); if (!r.width) return;
+    renderer.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; camera.position.z = camera.aspect < 1 ? 7.6 : 5.2; camera.updateProjectionMatrix();
+  }
+  function loop(now) {
+    const dt = Math.min(.05, Math.max(0, (now - lastT) / 1000)); lastT = now; idle += dt;
+    if (!dragging && idle > 2.5 && !reduceMotion) tRy += Math.sin(now / 1600) * dt * .35;
+    ry += (tRy - ry) * (1 - Math.pow(.002, dt));
+    group.rotation.y = ry; group.rotation.x = rx;
+    renderer.render(scene, camera);
+    raf = requestAnimationFrame(loop);
+  }
+  addEventListener("resize", () => { if (renderer && tab === "three" && lb.open) size(); });
+  return { show, stop() { cancelAnimationFrame(raf); } };
+})();
+
+/* ---------- inquiry form ---------- */
+const sel = $("workSelect");
+function fillSelect() {
+  const v = sel.value;
+  sel.innerHTML = `<option value="">ציור בהזמנה אישית / שאלה כללית</option>` +
+    (favs.size ? `<option value="favs">הציורים שסימנתי כמועדפים (${favs.size})</option>` : "") +
+    PAINTINGS.map((p, i) => p.sold ? "" : `<option value="${i}">${esc(p.title)}${p.size ? ` (${esc(p.size)})` : ""}</option>`).join("");
+  if ([...sel.options].some(o => o.value === v)) sel.value = v;
+}
+const direct = $("direct");
+if (CONFIG.whatsapp) direct.innerHTML += `<div>וואטסאפ: <a href="https://wa.me/${CONFIG.whatsapp}" dir="ltr">+${CONFIG.whatsapp}</a></div>`;
+if (CONFIG.email) direct.innerHTML += `<div>מייל: <span dir="ltr">${CONFIG.email}</span></div>`;
+if (CONFIG.instagram) direct.innerHTML += `<div>אינסטגרם: <a href="https://instagram.com/${CONFIG.instagram}" dir="ltr">@${CONFIG.instagram}</a></div>`;
+
+$("inquiry").addEventListener("submit", e => {
+  e.preventDefault();
+  const note = $("formNote"), via = e.submitter?.dataset.via || "email", f = new FormData(e.target);
+  if (!f.get("name").trim() || !f.get("reach").trim()) { note.textContent = "צריך למלא שם ודרך ליצור קשר."; return; }
+  const w = f.get("work");
+  const about = w === "favs" ? `מתעניין/ת בציורים: ${[...favs].sort((a, b) => a - b).map(i => PAINTINGS[i].title).join(", ")}.`
+    : w !== "" ? `מתעניין/ת בציור "${PAINTINGS[+w].title}"${PAINTINGS[+w].size ? ` (${PAINTINGS[+w].size})` : ""}.` : "אשמח לשמוע על ציור בהזמנה / שאלה כללית.";
+  const text = `שלום טל, אני ${f.get("name")}.\n${about}\n` + (f.get("msg").trim() ? f.get("msg").trim() + "\n" : "") + `ליצירת קשר: ${f.get("reach")}`;
+  if (via === "whatsapp" && CONFIG.whatsapp) location.href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`;
+  else if (via === "email" && CONFIG.email) location.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent("פנייה מהאתר")}&body=${encodeURIComponent(text)}`;
+  else { note.textContent = "פרטי הקשר של האמן עוד לא הוגדרו באתר. נסו שוב בקרוב."; return; }
   note.textContent = "ההודעה מוכנה לשליחה. תודה!";
 });
 
-/* ---------- theme toggle ---------- */
+/* ============================================================
+   HERO: paint trail + floating stack
+   ============================================================ */
+(() => {
+  const band = $("heroBand"), cv = $("paint"), g = cv.getContext("2d");
+  let W = 0, H = 0, raf = 0, active = 0, last = null, hue = 0;
+  const pal = PAINTINGS.flatMap(p => p.colors.slice(0, 2)).filter(c => { const n = parseInt(c.slice(1), 16), r = n >> 16, gg = n >> 8 & 255, b = n & 255; return Math.max(r, gg, b) - Math.min(r, gg, b) > 60; });
+  let color = pal[0] || "#c2410c";
+  function size() { const dpr = Math.min(devicePixelRatio, 2); W = band.clientWidth; H = band.clientHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  size(); new ResizeObserver(size).observe(band);
+  function dab(x0, y0, x1, y1, speed) {
+    const dist = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.ceil(dist / 3)), r = Math.max(5, 22 - speed * .25);
+    g.fillStyle = color;
+    for (let k = 0; k < n; k++) {
+      const t = k / n, x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t;
+      g.globalAlpha = .16;
+      for (let b = 0; b < 3; b++) { g.beginPath(); g.arc(x + (Math.random() - .5) * r * .8, y + (Math.random() - .5) * r * .8, r * (.35 + Math.random() * .5), 0, 7); g.fill(); }
+    }
+    g.globalAlpha = 1;
+  }
+  function fade() {
+    g.globalCompositeOperation = "destination-out"; g.fillStyle = "rgba(0,0,0,.035)"; g.fillRect(0, 0, W, H); g.globalCompositeOperation = "source-over";
+    if (performance.now() - active < 6000) raf = requestAnimationFrame(fade); else { raf = 0; g.clearRect(0, 0, W, H); }
+  }
+  function kick() { active = performance.now(); if (!raf) raf = requestAnimationFrame(fade); }
+  band.addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse") return;
+    const r = band.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    if (last) dab(last.x, last.y, x, y, Math.hypot(x - last.x, y - last.y));
+    last = { x, y }; kick();
+    if (!reduceMotion) $("stackInner").style.transform = `rotateY(${(x / W - .5) * 14}deg) rotateX(${-(y / H - .5) * 10}deg)`;
+  });
+  band.addEventListener("pointerleave", () => { last = null; color = pal[(++hue) % pal.length]; $("stackInner").style.transform = ""; });
+  band.addEventListener("pointerenter", () => { color = pal[Math.floor(Math.random() * pal.length)]; });
+  // one slow brush stroke on load, so the idea shows before anyone moves the mouse
+  if (!reduceMotion && pal.length) {
+    const strokes = [[.06, .82, .42, .6, .88, .86, pal[3 % pal.length]], [.5, .16, .72, .42, .97, .26, pal[9 % pal.length]]];
+    let t0 = 0;
+    const run = now => {
+      if (!t0) t0 = now;
+      const t = Math.min(1, (now - t0) / 2400);
+      strokes.forEach(([ax, ay, bx, by, cx, cy, c], si) => {
+        const tt = Math.max(0, Math.min(1, t * 1.6 - si * .6)); if (tt <= 0 || tt >= 1) return;
+        const pt = s => { const u = 1 - s; return [(u * u * ax + 2 * u * s * bx + s * s * cx) * W, (u * u * ay + 2 * u * s * by + s * s * cy) * H]; };
+        const [x0, y0] = pt(Math.max(0, tt - .015)), [x1, y1] = pt(tt); color = c; dab(x0, y0, x1, y1, 4);
+      });
+      kick(); if (t < 1) requestAnimationFrame(run); else color = pal[0];
+    };
+    setTimeout(() => requestAnimationFrame(run), 500);
+  }
+})();
+
+/* ---------- theme, progress, deep links ---------- */
 const root = document.documentElement;
 try { const t = localStorage.getItem("theme"); if (t) root.dataset.theme = t; } catch {}
-document.getElementById("themeBtn").onclick = () => {
+$("themeBtn").onclick = () => {
   const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
   root.dataset.theme = dark ? "light" : "dark";
   try { localStorage.setItem("theme", root.dataset.theme); } catch {}
 };
-document.getElementById("yr").textContent = new Date().getFullYear();
+addEventListener("scroll", () => {
+  const h = document.documentElement.scrollHeight - innerHeight;
+  $("progress").style.width = (h > 0 ? scrollY / h * 100 : 0) + "%";
+}, { passive: true });
+$("yr").textContent = new Date().getFullYear();
+renderGrid(); syncFavs();
+function fromHash() { const m = location.hash.match(/^#w(\d+)$/); if (m && PAINTINGS[m[1] - 1]) openLB(m[1] - 1); }
+addEventListener("hashchange", fromHash); fromHash();
 </script>
 </body>
 </html>
