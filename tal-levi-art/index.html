@@ -107,11 +107,11 @@
     padding: 8px 16px; border-radius: 999px; cursor: pointer;
   }
   .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-  .grid-art { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 32px; }
+  .grid-art { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px 28px; }
   @media (max-width: 960px) { .grid-art { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 560px) { .grid-art { grid-template-columns: 1fr; } }
   .card { cursor: pointer; text-align: start; background: none; border: 0; padding: 0; color: inherit; font: inherit; }
-  .card .pic { position: relative; aspect-ratio: 4/5; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
+  .card .pic { position: relative; aspect-ratio: 3/2; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
   .card .pic img, .card .pic svg { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
   .card:hover .pic img, .card:hover .pic svg { transform: scale(1.03); }
   .badge { position: absolute; top: 12px; right: 12px; background: var(--surface); color: var(--ink); font-size: 13px; padding: 4px 10px; border-radius: 999px; font-weight: 600; }
@@ -163,7 +163,13 @@
   dialog::backdrop { background: rgba(10,9,8,.8); }
   .lb { display: grid; grid-template-columns: 1.4fr 1fr; }
   .lb .img { background: var(--surface); display: grid; place-items: center; min-height: 300px; }
-  .lb .img img, .lb .img svg { width: 100%; height: 100%; max-height: 82vh; object-fit: contain; }
+  .lb .img { display: flex; flex-direction: column; }
+  #lbImg { flex: 1; display: grid; place-items: center; width: 100%; }
+  #lbImg img { width: 100%; max-height: 74vh; object-fit: contain; }
+  .shots { display: flex; gap: 8px; padding: 10px; overflow-x: auto; width: 100%; }
+  .shots button { flex: 0 0 auto; width: 72px; height: 48px; padding: 0; border: 2px solid transparent; border-radius: 3px; overflow: hidden; cursor: pointer; background: none; }
+  .shots button[aria-pressed="true"] { border-color: var(--accent); }
+  .shots img { width: 100%; height: 100%; object-fit: cover; }
   .lb .info { padding: 40px 32px; display: flex; flex-direction: column; gap: 14px; }
   .lb h3 { font-family: "Frank Ruhl Libre", serif; font-size: 34px; font-weight: 500; margin: 0; line-height: 1.15; }
   .lb dl { margin: 8px 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; font-size: 16px; }
@@ -306,7 +312,7 @@
 <dialog id="lb" aria-label="פרטי הציור">
   <button class="close" id="lbClose" aria-label="סגירה">×</button>
   <div class="lb">
-    <div class="img" id="lbImg"></div>
+    <div class="img"><div id="lbImg"></div><div class="shots" id="lbShots"></div></div>
     <div class="info">
       <p class="section-label" id="lbStyle" style="margin:0"></p>
       <h3 id="lbTitle"></h3>
@@ -329,55 +335,59 @@ const CONFIG = {
 
 /* ============================================================
    הציורים: כל שורה היא ציור אחד.
-   image: שם הקובץ בתיקיית images (למשל "images/01.jpg").
-   כל עוד image ריק, מוצג מקום שמור לציור.
+   title: שם הציור · year / size / medium: שנה, מידות, טכניקה (ריק = לא מוצג)
    style: "abstract" | "surreal" | "expressionism"
    price: מספר בשקלים, או null כדי להציג "מחיר לפי פנייה"
    sold: true כשהציור נמכר
+   image: הצילום המלא · details: צילומי תקריב
    ============================================================ */
 const PAINTINGS = [
-  { title: "ללא כותרת 1", year: 2026, size: "80×100 ס״מ", medium: "אקריליק על בד", style: "abstract",      price: null, sold: false, image: "" },
-  { title: "ללא כותרת 2", year: 2026, size: "60×80 ס״מ",  medium: "אקריליק על בד", style: "expressionism", price: null, sold: false, image: "" },
-  { title: "ללא כותרת 3", year: 2025, size: "70×90 ס״מ",  medium: "שמן על בד",     style: "surreal",       price: null, sold: false, image: "" },
-  { title: "ללא כותרת 4", year: 2025, size: "50×70 ס״מ",  medium: "טכניקה מעורבת", style: "abstract",      price: null, sold: false, image: "" },
-  { title: "ללא כותרת 5", year: 2025, size: "100×120 ס״מ",medium: "אקריליק על בד", style: "expressionism", price: null, sold: false, image: "" },
-  { title: "ללא כותרת 6", year: 2024, size: "60×60 ס״מ",  medium: "שמן על בד",     style: "surreal",       price: null, sold: false, image: "" },
+  { title: "עבודה 01", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w01.jpg", details: ["images/w01-d1.jpg", "images/w01-d2.jpg", "images/w01-d3.jpg"] },
+  { title: "עבודה 02", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w02.jpg", details: ["images/w02-d1.jpg"] },
+  { title: "עבודה 03", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w03.jpg", details: ["images/w03-d1.jpg", "images/w03-d2.jpg"] },
+  { title: "עבודה 04", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w04.jpg", details: ["images/w04-d1.jpg"] },
+  { title: "עבודה 05", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w05.jpg", details: ["images/w05-d1.jpg", "images/w05-d2.jpg", "images/w05-d3.jpg", "images/w05-d4.jpg"] },
+  { title: "עבודה 06", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w06.jpg", details: ["images/w06-d1.jpg", "images/w06-d2.jpg"] },
+  { title: "עבודה 07", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w07.jpg", details: ["images/w07-d1.jpg"] },
+  { title: "עבודה 08", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w08.jpg", details: ["images/w08-d1.jpg"] },
+  { title: "עבודה 09", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w09.jpg", details: ["images/w09-d1.jpg"] },
+  { title: "עבודה 10", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w10.jpg", details: ["images/w10-d1.jpg"] },
+  { title: "עבודה 11", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w11.jpg", details: ["images/w11-d1.jpg"] },
+  { title: "עבודה 12", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w12.jpg", details: ["images/w12-d1.jpg"] },
+  { title: "עבודה 13", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w13.jpg", details: ["images/w13-d1.jpg", "images/w13-d2.jpg"] },
+  { title: "עבודה 14", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w14.jpg", details: ["images/w14-d1.jpg"] },
+  { title: "עבודה 15", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w15.jpg", details: ["images/w15-d1.jpg"] },
+  { title: "עבודה 16", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w16.jpg", details: ["images/w16-d1.jpg", "images/w16-d2.jpg"] },
+  { title: "עבודה 17", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w17.jpg", details: ["images/w17-d1.jpg"] },
+  { title: "עבודה 18", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w18.jpg", details: ["images/w18-d1.jpg"] },
+  { title: "עבודה 19", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w19.jpg", details: ["images/w19-d1.jpg"] },
+  { title: "עבודה 20", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w20.jpg", details: ["images/w20-d1.jpg", "images/w20-d2.jpg"] },
+  { title: "עבודה 21", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w21.jpg", details: ["images/w21-d1.jpg"] },
+  { title: "עבודה 22", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w22.jpg", details: ["images/w22-d1.jpg"] },
+  { title: "עבודה 23", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w23.jpg", details: ["images/w23-d1.jpg"] },
+  { title: "עבודה 24", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w24.jpg", details: ["images/w24-d1.jpg"] },
+  { title: "עבודה 25", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w25.jpg", details: ["images/w25-d1.jpg"] },
+  { title: "עבודה 26", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w26.jpg", details: [] },
+  { title: "עבודה 27", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w27.jpg", details: ["images/w27-d1.jpg", "images/w27-d2.jpg"] },
+  { title: "עבודה 28", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w28.jpg", details: ["images/w28-d1.jpg", "images/w28-d2.jpg"] },
+  { title: "עבודה 29", year: "", size: "", medium: "", style: "surreal", price: null, sold: false, image: "images/w29.jpg", details: ["images/w29-d1.jpg", "images/w29-d2.jpg"] },
+  { title: "עבודה 30", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w30.jpg", details: ["images/w30-d1.jpg"] },
+  { title: "עבודה 31", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w31.jpg", details: ["images/w31-d1.jpg", "images/w31-d2.jpg"] },
+  { title: "עבודה 32", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w32.jpg", details: ["images/w32-d1.jpg"] },
+  { title: "עבודה 33", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w33.jpg", details: ["images/w33-d1.jpg"] },
+  { title: "עבודה 34", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w34.jpg", details: ["images/w34-d1.jpg", "images/w34-d2.jpg"] },
+  { title: "עבודה 35", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w35.jpg", details: ["images/w35-d1.jpg"] },
+  { title: "עבודה 36", year: "", size: "", medium: "", style: "expressionism", price: null, sold: false, image: "images/w36.jpg", details: ["images/w36-d1.jpg", "images/w36-d2.jpg", "images/w36-d3.jpg"] },
+  { title: "עבודה 37", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w37.jpg", details: ["images/w37-d1.jpg", "images/w37-d2.jpg"] },
+  { title: "עבודה 38", year: "", size: "", medium: "", style: "abstract", price: null, sold: false, image: "images/w38.jpg", details: ["images/w38-d1.jpg", "images/w38-d2.jpg", "images/w38-d3.jpg", "images/w38-d4.jpg"] },
 ];
 
 const STYLES = { abstract: "אבסטרקט", surreal: "סוריאליזם", expressionism: "אקספרסיוניזם" };
 
-/* ---------- placeholder art (shown until a real photo is added) ---------- */
-function rng(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
-const PALETTES = [
-  ["#1f3a5f","#e4572e","#f3a712","#f2ede4","#0b0b0b"],
-  ["#2b2d42","#ef233c","#edf2f4","#8d99ae","#d90429"],
-  ["#264653","#2a9d8f","#e9c46a","#f4a261","#e76f51"],
-  ["#3d1f3d","#d1495b","#edae49","#00798c","#f1e9da"],
-  ["#14213d","#fca311","#e5e5e5","#7b2cbf","#000000"],
-  ["#0f4c5c","#e36414","#fb8b24","#9a031e","#f6efe3"],
-];
-function placeholderSVG(i, label = true) {
-  const r = rng(i * 9301 + 49297), p = PALETTES[i % PALETTES.length];
-  const pick = () => p[Math.floor(r() * p.length)];
-  let s = `<svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="מקום שמור לציור">`;
-  s += `<rect width="400" height="500" fill="${p[3]}"/>`;
-  for (let k = 0; k < 7; k++) {
-    const cx = r()*400, cy = r()*500, rad = 60 + r()*170;
-    s += `<circle cx="${cx|0}" cy="${cy|0}" r="${rad|0}" fill="${pick()}" opacity="${(.35 + r()*.5).toFixed(2)}"/>`;
-  }
-  for (let k = 0; k < 6; k++) {
-    let d = `M${(r()*400)|0} ${(r()*500)|0}`;
-    for (let j = 0; j < 3; j++) d += ` Q${(r()*400)|0} ${(r()*500)|0} ${(r()*400)|0} ${(r()*500)|0}`;
-    s += `<path d="${d}" fill="none" stroke="${pick()}" stroke-width="${(3 + r()*16)|0}" stroke-linecap="round" opacity=".85"/>`;
-  }
-  return s + `</svg>`;
-}
-function artHTML(p, i) {
-  return p.image
-    ? `<img src="${p.image}" alt="${p.title}, ${STYLES[p.style] || ""}" loading="lazy">`
-    : placeholderSVG(i);
-}
+const thumb = src => src.replace("images/", "images/thumbs/");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const priceText = p => p.sold ? "נמכר" : (p.price ? "₪" + p.price.toLocaleString("he-IL") : "מחיר לפי פנייה");
+const subText = p => [STYLES[p.style], p.size].filter(Boolean).join(" · ");
 
 /* ---------- gallery ---------- */
 const grid = document.getElementById("grid");
@@ -389,12 +399,11 @@ function renderGrid() {
     const b = document.createElement("button");
     b.className = "card"; b.type = "button";
     b.innerHTML = `
-      <div class="pic">${artHTML(p, i)}
+      <div class="pic"><img src="${thumb(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async">
         ${p.sold ? '<span class="badge sold">נמכר</span>' : ''}
-        ${p.image ? '' : '<span class="badge ph">כאן תעלה תמונת הציור</span>'}
       </div>
       <div class="meta">
-        <div><h3>${p.title}</h3><div class="sub">${STYLES[p.style] || ""} · ${p.size}</div></div>
+        <div><h3>${esc(p.title)}</h3><div class="sub">${esc(subText(p))}</div></div>
         <div class="price">${priceText(p)}</div>
       </div>`;
     b.addEventListener("click", () => openLB(i));
@@ -411,20 +420,32 @@ const filters = document.getElementById("filters");
 });
 renderGrid();
 
-/* hero: first two paintings */
-document.getElementById("heroA").innerHTML = artHTML(PAINTINGS[0] || {}, 0);
-document.getElementById("heroB").innerHTML = artHTML(PAINTINGS[1] || {}, 1);
+/* hero: two close-up details */
+document.getElementById("heroA").innerHTML = `<img src="images/w31-d2.jpg" alt="">`;
+document.getElementById("heroB").innerHTML = `<img src="images/w01-d2.jpg" alt="">`;
 document.getElementById("countWorks").textContent = PAINTINGS.filter(p => !p.sold).length;
 
 /* ---------- lightbox ---------- */
 const lb = document.getElementById("lb");
 function openLB(i) {
-  const p = PAINTINGS[i];
-  document.getElementById("lbImg").innerHTML = artHTML(p, i);
+  const p = PAINTINGS[i], shots = [p.image, ...(p.details || [])];
+  const main = document.getElementById("lbImg");
+  const show = src => { main.innerHTML = `<img src="${src}" alt="${esc(p.title)}">`; };
+  show(p.image);
+  const strip = document.getElementById("lbShots");
+  strip.innerHTML = "";
+  if (shots.length > 1) shots.forEach((s, k) => {
+    const t = document.createElement("button");
+    t.type = "button"; t.setAttribute("aria-label", k ? `תקריב ${k}` : "הציור המלא");
+    t.setAttribute("aria-pressed", k === 0);
+    t.innerHTML = `<img src="${k ? s : thumb(s)}" alt="" loading="lazy">`;
+    t.onclick = () => { show(s); [...strip.children].forEach(x => x.setAttribute("aria-pressed", x === t)); };
+    strip.appendChild(t);
+  });
   document.getElementById("lbStyle").textContent = STYLES[p.style] || "";
   document.getElementById("lbTitle").textContent = p.title;
-  document.getElementById("lbMeta").innerHTML =
-    `<dt>שנה</dt><dd>${p.year}</dd><dt>מידות</dt><dd>${p.size}</dd><dt>טכניקה</dt><dd>${p.medium}</dd>`;
+  document.getElementById("lbMeta").innerHTML = [["שנה", p.year], ["מידות", p.size], ["טכניקה", p.medium]]
+    .filter(([, v]) => v).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
   document.getElementById("lbPrice").textContent = priceText(p);
   const buy = document.getElementById("lbBuy");
   buy.style.display = p.sold ? "none" : "";
@@ -437,7 +458,7 @@ lb.addEventListener("click", e => { if (e.target === lb) lb.close(); });
 /* ---------- inquiry form ---------- */
 const sel = document.getElementById("workSelect");
 sel.innerHTML = `<option value="">ציור בהזמנה אישית / שאלה כללית</option>` +
-  PAINTINGS.map((p, i) => p.sold ? "" : `<option value="${i}">${p.title} (${p.size})</option>`).join("");
+  PAINTINGS.map((p, i) => p.sold ? "" : `<option value="${i}">${p.title}${p.size ? ` (${p.size})` : ""}</option>`).join("");
 
 const direct = document.getElementById("direct");
 if (CONFIG.whatsapp) direct.innerHTML += `<div>וואטסאפ: <a href="https://wa.me/${CONFIG.whatsapp}" dir="ltr">+${CONFIG.whatsapp}</a></div>`;
@@ -452,7 +473,7 @@ form.addEventListener("submit", e => {
   if (!f.get("name").trim() || !f.get("reach").trim()) { note.textContent = "צריך למלא שם ודרך ליצור קשר."; return; }
   const w = f.get("work") !== "" ? PAINTINGS[+f.get("work")] : null;
   const text = `שלום טל, אני ${f.get("name")}.\n` +
-    (w ? `מתעניין/ת בציור "${w.title}" (${w.size}).\n` : `אשמח לשמוע על ציור בהזמנה / שאלה כללית.\n`) +
+    (w ? `מתעניין/ת בציור "${w.title}"${w.size ? ` (${w.size})` : ""}.\n` : `אשמח לשמוע על ציור בהזמנה / שאלה כללית.\n`) +
     (f.get("msg").trim() ? f.get("msg").trim() + "\n" : "") +
     `ליצירת קשר: ${f.get("reach")}`;
   if (via === "whatsapp" && CONFIG.whatsapp) {
