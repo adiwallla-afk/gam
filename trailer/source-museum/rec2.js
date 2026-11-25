@@ -5,7 +5,10 @@ const OUT = path.resolve(process.argv[3] || `frames-${FMT}`);
 const SITE = 'http://127.0.0.1:8765/index.html';
 const IMG = 'http://127.0.0.1:8765/images';
 const CARDS = 'file://' + path.resolve(__dirname, 'cards.html');
-const THREE_JS = fs.readFileSync(path.resolve(__dirname, '../three/package/build/three.min.js'));
+const LIB = process.env.LIB || path.resolve(__dirname, '../lib');          // local copies of the CDN scripts (three r128, model-viewer 3.5.0, qrcode-generator 1.4.4)
+const THREE_JS = fs.readFileSync(path.join(LIB, 'three.min.js'));
+const MV_JS = fs.readFileSync(path.join(LIB, 'model-viewer.min.js')), QR_JS = fs.readFileSync(path.join(LIB, 'qrcode.js'));
+const ROOM_PHOTO = process.env.ROOM_PHOTO || path.resolve(__dirname, 'room.jpg');
 const FPS = 30, WIDE = FMT === 'wide';
 const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null, CAPTOP = !!process.env.CAPTOP;
 const VP = WIDE ? { width: 1440, height: 810, dsf: 4 / 3 } : { width: 405, height: 720, dsf: 8 / 3 };
@@ -15,11 +18,14 @@ const clamp = x => Math.max(0, Math.min(1, x));
 (async () => {
   const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
   let ctx, page, sceneNo = 0, clockOn = false;
-  async function newPage() {
+  async function newPage(phone) {
     if (ctx) await ctx.close();
-    ctx = await b.newContext({ viewport: { width: VP.width, height: VP.height }, deviceScaleFactor: VP.dsf, colorScheme: 'light' });
+    ctx = await b.newContext({ viewport: { width: VP.width, height: VP.height }, deviceScaleFactor: VP.dsf, colorScheme: 'light',
+      ...(phone ? { isMobile: true, hasTouch: true, userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36' } : {}) });
     page = await ctx.newPage();
-    await page.route('https://cdnjs.cloudflare.com/**', r => r.fulfill({ body: THREE_JS, contentType: 'application/javascript' }));
+    await page.route('https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/**', r => r.fulfill({ body: QR_JS, contentType: 'application/javascript' }));
+    await page.route('https://cdnjs.cloudflare.com/ajax/libs/three.js/**', r => r.fulfill({ body: THREE_JS, contentType: 'application/javascript' }));
+    await page.route('https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/**', r => r.fulfill({ body: MV_JS, contentType: 'application/javascript' }));
     page.on('pageerror', e => console.log('PAGEERROR', e.message));
   }
   async function record(name, dur, step) {
@@ -41,8 +47,8 @@ const clamp = x => Math.max(0, Math.min(1, x));
     await page.waitForFunction(() => { const u = getComputedStyle(document.querySelector('.bg')).backgroundImage.slice(5, -2); return new Promise(r => { const i = new Image(); i.onload = () => r(true); i.src = u; }); });
     await record('card-' + name, dur, (t, d) => page.evaluate(([t, d]) => setT(t, d), [t, d]));
   }
-  async function openSite() {
-    await newPage();
+  async function openSite(phone) {
+    await newPage(phone);
     await page.clock.install({ time: new Date('2026-11-23T10:00:00') }); clockOn = true;
     await page.goto(SITE);
     await page.clock.pauseAt(new Date((await page.evaluate(() => Date.now())) + 1000));   // time only moves when the recorder says so
@@ -128,16 +134,37 @@ const clamp = x => Math.max(0, Math.min(1, x));
   // 7 card
   await card('stone', 3.2);
 
-  // 8 on my wall
+  // 8 a photo of your own wall: the painting hangs on it, drag it, size it, try what matches the room
   await openSite();
   await page.evaluate(() => { openLB(30); setTab('wall'); });
-  await page.clock.runFor(200);
-  const walls = ['#ece6da', '#2f3e4c', '#6b7357', '#b5654a'];
-  let wi = -1;
-  await record('wall', 4.8, async (t, d) => {
-    const k = Math.min(3, Math.floor(t / 1.25));
-    if (k !== wi) { wi = k; await page.evaluate(c => document.querySelector(`#wallColors [data-c="${c}"]`).click(), walls[k]); }
-    await cap('ואיך הוא ייראה על הקיר שלכם', t, d, .3);
+  await page.setInputFiles('#wallFile', ROOM_PHOTO);
+  await page.waitForFunction(() => !document.getElementById('wallMatch').hidden && document.querySelector('#lbWall .art img').complete);
+  await page.waitForTimeout(800); await page.clock.runFor(300);
+  const art = await page.locator('#wallArt').boundingBox(), ax = art.x + art.width / 2, ay = art.y + art.height / 2;
+  const DX = WIDE ? -170 : -60, DY = WIDE ? 30 : 20; let down = false, up = false, swapped = false;
+  await record('mywall', 6.2, async (t, d) => {
+    const s = ease((t - .7) / 2.1);
+    if (t > .5 && !down) { down = true; await page.mouse.move(ax, ay); await page.mouse.down(); }
+    if (down && !up) await page.mouse.move(ax + DX * s, ay + DY * s);
+    if (t > 3 && !up) { up = true; await page.mouse.up(); }
+    if (t > 3.1 && t < 4.3) await page.evaluate(v => { const r = document.getElementById('wallSize'); r.value = v; r.dispatchEvent(new Event('input')); }, Math.round(32 - 8 * ease((t - 3.1) / 1.1)));
+    if (t > 4.5 && !swapped) { swapped = true; await page.evaluate(() => document.querySelector('#wallMatch button:nth-of-type(2)').click()); }
+    await cap(t < 4.3 ? 'מצלמים את הקיר שלכם, והציור כבר תלוי עליו' : 'ומקבלים ציורים שמתאימים לצבעי החדר', t < 4.3 ? t : t - 4.3, t < 4.3 ? 4.3 : d - 4.3, t < 4.3 ? .35 : .05);
+  });
+
+  // 8b AR: the real canvas on the real wall, at real size
+  await openSite(!WIDE);
+  await page.evaluate(() => { openLB(30); AR.open(30); });
+  for (let k = 0; k < 200; k++) {
+    await page.clock.runFor(100); await page.waitForTimeout(50);
+    if (await page.evaluate(w => { const m = document.querySelector('model-viewer'); return !!(m && m.loaded) && (w ? !document.getElementById('arQR').hidden : !document.getElementById('arGo').hidden); }, WIDE)) break;
+  }
+  await page.waitForTimeout(1500); for (let k = 0; k < 10; k++) await page.clock.runFor(100);
+  let sz = 1;
+  await record('ar', 6, async (t, d) => {
+    const k = t < 2.2 ? 1 : t < 3.8 ? 2 : 0;
+    if (k !== sz) { sz = k; await page.evaluate(k => document.querySelector(`#arSizes button:nth-child(${k + 1})`).click(), k); }
+    await cap(WIDE ? 'וגם במציאות רבודה: סורקים, והציור על הקיר האמיתי' : 'בטלפון: הציור על הקיר האמיתי, בגודל אמיתי', t, d, .4);
   });
 
   // 9 colour search
