@@ -10,7 +10,7 @@ const THREE_JS = fs.readFileSync(path.join(LIB, 'three.min.js'));
 const MV_JS = fs.readFileSync(path.join(LIB, 'model-viewer.min.js')), QR_JS = fs.readFileSync(path.join(LIB, 'qrcode.js'));
 const ROOM_PHOTO = process.env.ROOM_PHOTO || path.resolve(__dirname, 'room.jpg');
 const FPS = 30, WIDE = FMT === 'wide';
-const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null, CAPTOP = !!process.env.CAPTOP;
+const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null, CAPTOP = !!process.env.CAPTOP, CAPBOT = !!process.env.CAPBOT;
 const VP = WIDE ? { width: 1440, height: 810, dsf: 4 / 3 } : { width: 405, height: 720, dsf: 8 / 3 };
 const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 const clamp = x => Math.max(0, Math.min(1, x));
@@ -54,7 +54,7 @@ const clamp = x => Math.max(0, Math.min(1, x));
     await page.clock.pauseAt(new Date((await page.evaluate(() => Date.now())) + 1000));   // time only moves when the recorder says so
     await page.addStyleTag({ content: `
       html{scroll-behavior:auto!important} *{transition:none!important}
-      #cap{position:fixed;inset:${WIDE && !CAPTOP ? 'auto 0 48px 0' : (WIDE ? '26px 0 auto 0' : '90px 0 auto 0')};margin:0 auto;width:max-content;max-width:88vw;border:1px solid rgba(201,169,110,.55);padding:12px 30px;
+      #cap{position:fixed;inset:${CAPBOT ? 'auto 0 26px 0' : WIDE && !CAPTOP ? 'auto 0 48px 0' : (WIDE ? '26px 0 auto 0' : '90px 0 auto 0')};margin:0 auto;width:max-content;max-width:88vw;border:1px solid rgba(201,169,110,.55);padding:12px 30px;
         background:rgba(10,9,8,.86);color:#ece4d6;font:400 ${WIDE ? '30px' : '21px'}/1.25 Bellefair,serif;letter-spacing:.02em;opacity:0;pointer-events:none;text-align:center}
       .trailer-room header.top, .trailer-room #room > .head, .trailer-room #progress { display:none!important }
       .trailer-room .room { padding:0!important } .trailer-room .room-stage { height:100vh!important }
